@@ -6,7 +6,7 @@ import ProtectedRoute from "@/app/components/ProtectedRoute";
 import RoleRoute from "@/app/components/RoleRoute";
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
-import Greet from './tabs/Greet'
+import Greet from './tabs/greet'
 import ProfilePage from "@/app/profile/page";
 
 
