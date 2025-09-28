@@ -17,12 +17,16 @@ export async function PATCH(req) {
     if (!user) return new Response(JSON.stringify({ message: "User not found" }), { status: 404 });
 
     const body = await req.json();
-    const { name, password } = body;
+    const { name,address } = body;
 
-    if (name) user.name = name;
-    if (password) user.password = await bcrypt.hash(password, 10);
-
-    await user.save();
+    const updatedUser = await userModel.findByIdAndUpdate(
+      decoded.id,
+      {
+        name,       // update name
+        address,    // replace entire address object
+      },
+      { new: true, runValidators: true } // return updated doc & validate schema
+    );
 
     return new Response(JSON.stringify({ message: "Profile updated successfully" }), { status: 200 });
   } catch (err) {
