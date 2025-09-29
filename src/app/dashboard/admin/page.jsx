@@ -8,6 +8,7 @@ import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import Greet from './tabs/greet'
 import ProfilePage from "@/app/profile/page";
+import { Suspense } from "react";
 
 
 export default function AdminDashboard() {
@@ -31,7 +32,9 @@ export default function AdminDashboard() {
         <div className="flex min-h-screen bg-gray-100">
           {/* ===== Desktop Sidebar ===== */}
           <div className="hidden md:block">
-            <AdminSidebar />
+            <Suspense fallback={<div>Loading dashboard…</div>}>
+              <AdminSidebar />
+            </Suspense>
           </div>
 
           {/* ===== Mobile Sidebar Overlay ===== */}
