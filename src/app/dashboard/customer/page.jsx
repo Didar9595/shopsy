@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect,Suspense } from "react";
 import CustomerSidebar from "@/app/components/Customer/CustomerSidebar";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
 import RoleRoute from "@/app/components/RoleRoute";
@@ -14,7 +14,7 @@ import ProfilePage from "@/app/profile/page";
 // import CustomerCart from "./tabs/cart";
 // import CustomerWishlist from "./tabs/wishlist";
 
-export default function CustomerDashboard() {
+function CustomerDashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const searchParams = useSearchParams();
   const [tab, setTab] = useState("greet"); // default tab
@@ -28,8 +28,6 @@ export default function CustomerDashboard() {
   }, [searchParams]);
 
   return (
-    <ProtectedRoute>
-      <RoleRoute allowedRoles={["customer"]}>
         <div className="flex min-h-screen bg-gray-100">
           {/* ===== Desktop Sidebar ===== */}
           <div className="hidden md:block">
@@ -58,7 +56,19 @@ export default function CustomerDashboard() {
             {tab === "wishlist" && <CustomerWishlist />}
           </div>
         </div>
-      </RoleRoute>
-    </ProtectedRoute>
+      
   );
+}
+
+
+export default function Customer(){
+  return(
+    <ProtectedRoute>
+      <RoleRoute allowedRoles={["customer"]}>
+        <Suspense fallback={<div>Loading dashboard…</div>}>
+         <CustomerDashboard/>
+        </Suspense>
+      </RoleRoute>
+      </ProtectedRoute>
+  )
 }
