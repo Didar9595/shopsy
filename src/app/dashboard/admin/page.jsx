@@ -42,7 +42,9 @@ export default function AdminDashboard() {
             <div className="fixed inset-0 z-40 flex">
               <div className="fixed inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
               <div className="relative z-50 w-64">
-                <AdminSidebar onLinkClick={() => setMobileOpen(false)} />
+                <Suspense fallback={<div>Loading dashboard…</div>}>
+                  <AdminSidebar onLinkClick={() => setMobileOpen(false)} />
+                </Suspense>
               </div>
             </div>
           )}
