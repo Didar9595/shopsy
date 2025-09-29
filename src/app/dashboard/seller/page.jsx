@@ -1,16 +1,64 @@
 "use client";
-import RoleRoute from "@/app/components/RoleRoute";
 
-export default function SellerDashboard() {
+import { useState,useEffect } from "react";
+import ProtectedRoute from "@/app/components/ProtectedRoute";
+import RoleRoute from "@/app/components/RoleRoute";
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import Greet from './tabs/greet'
+import ProfilePage from "@/app/profile/page";
+import { Suspense } from "react";
+import SellerSidebar from "@/app/components/Seller/SellerSidebar";
+
+
+ function AdminDashboard() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+   const searchParams=useSearchParams()
+  const [tab,setTab]=useState('')
+   const router=useRouter()
+
+
+  useEffect(()=>{
+    const urlParams=new URLSearchParams(searchParams);
+    const tabFromUrl=urlParams.get('tab');
+    if(tabFromUrl){
+      setTab(tabFromUrl)
+    }
+  },[searchParams])
+
   return (
-    <RoleRoute allowedRoles={["seller"]}>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Seller Dashboard</h1>
-        <ul className="list-disc pl-6">
-          <li>Manage your shop and products</li>
-          <li>View orders from customers</li>
-        </ul>
-      </div>
-    </RoleRoute>
+   
+        <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+          {/* ===== Desktop Sidebar ===== */}
+          <div className="">
+              <SellerSidebar />
+          </div>
+
+     
+
+          {/* ===== Main Content ===== */}
+          <div className="flex-1 flex flex-col">
+            {tab==='greet' && <Greet/>}
+             {tab==='profile' && <ProfilePage/>}
+             {tab==='posts' && <DashPosts/>}
+             {tab==='users' && <DashUsers/>}
+             {tab==='dash' && <DashboardComp/>}
+           
+          </div>
+        </div>
+    
   );
+}
+
+
+export default function Admin(){
+  return(
+     <ProtectedRoute>
+      <RoleRoute allowedRoles={["seller"]}>
+        <Suspense fallback={<div>Loading dashboard…</div>}>
+          <AdminDashboard/>
+        </Suspense>
+      </RoleRoute>
+      </ProtectedRoute>
+  )
 }

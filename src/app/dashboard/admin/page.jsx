@@ -28,25 +28,13 @@ import { Suspense } from "react";
 
   return (
    
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
           {/* ===== Desktop Sidebar ===== */}
-          <div className="hidden md:block">
-
+          <div className="">
               <AdminSidebar />
-          
           </div>
 
-          {/* ===== Mobile Sidebar Overlay ===== */}
-          {mobileOpen && (
-            <div className="fixed inset-0 z-40 flex">
-              <div className="fixed inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-              <div className="relative z-50 w-64">
-
-                  <AdminSidebar onLinkClick={() => setMobileOpen(false)} />
-          
-              </div>
-            </div>
-          )}
+     
 
           {/* ===== Main Content ===== */}
           <div className="flex-1 flex flex-col">

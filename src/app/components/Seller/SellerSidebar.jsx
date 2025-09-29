@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Users, User, Store, Package, ShoppingBag,X ,Menu} from "lucide-react";
 
-export default function AdminSidebar({ onLinkClick }) {
+export default function SellerSidebar({ onLinkClick }) {
   const searchParams = useSearchParams();
   const [tab, setTab] = useState("");
   const [menuOpen,setMenuOpen]=useState(false);
@@ -16,19 +16,18 @@ export default function AdminSidebar({ onLinkClick }) {
   }, [searchParams]);
 
   const links = [
-         { href: "/dashboard/admin?tab=greet", label: "Dashboard", icon: User },
-    { href: "/dashboard/admin?tab=profile", label: "My Profile", icon: User },
-    { href: "/dashboard/admin?tab=users", label: "Users", icon: Users },
-    { href: "/dashboard/admin?tab=requests", label: "Seller Requests", icon: Store },
-    { href: "/dashboard/admin?tab=products", label: "Products", icon: Package },
-    { href: "/dashboard/admin?tab=orders", label: "Orders", icon: ShoppingBag },
+    { href: "/dashboard/seller?tab=greet", label: "Dashboard", icon: User },
+    { href: "/dashboard/seller?tab=profile", label: "My Profile", icon: User },
+    { href: "/dashboard/seller?tab=shop", label: "My Shop", icon: Store },
+    { href: "/dashboard/seller?tab=products", label: "Products", icon: Package },
+    { href: "/dashboard/seller?tab=orders", label: "Orders", icon: ShoppingBag },
   ];
 
   return (
     <div className="h-full">
       <aside className="md:block hidden h-full bg-gray-800 text-white w-64 flex-shrink-0">
       <div className="p-4 text-2xl font-bold border-b border-gray-700">
-        Admin Panel
+        Seller Panel
       </div>
       <nav className="p-2 flex flex-col gap-2">
         {links.map(({ href, label, icon: Icon }) => {
@@ -50,11 +49,11 @@ export default function AdminSidebar({ onLinkClick }) {
     </aside>
     
     
-    
+    {/* Mobile view */}
     <aside className="block md:hidden h-[fit-content] bg-gray-800 text-white w-[full]">
       <div className="flex flex-row justify-between items-center p-2">
         <div className="p-4 text-2xl font-bold">
-        Admin Panel
+        Seller Panel
       </div>
       {
         menuOpen?(

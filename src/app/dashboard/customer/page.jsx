@@ -28,24 +28,13 @@ function CustomerDashboard() {
   }, [searchParams]);
 
   return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
           {/* ===== Desktop Sidebar ===== */}
-          <div className="hidden md:block">
+          <div className="">
             <CustomerSidebar />
           </div>
 
-          {/* ===== Mobile Sidebar Overlay ===== */}
           
-            <div className="fixed inset-0 z-40 flex md:hidden" >
-              <div
-                className="fixed inset-0 bg-black/40"
-                onClick={() => setMobileOpen(false)}
-              />
-              <div className="relative z-50 w-64">
-                <CustomerSidebar onLinkClick={() => setMobileOpen(false)} />
-              </div>
-            </div>
-        
 
           {/* ===== Main Content ===== */}
           <div className="flex-1 flex flex-col p-4">
