@@ -11,7 +11,7 @@ import ProfilePage from "@/app/profile/page";
 import { Suspense } from "react";
 
 
-export default function AdminDashboard() {
+ function AdminDashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
    const searchParams=useSearchParams()
   const [tab,setTab]=useState('')
@@ -27,14 +27,13 @@ export default function AdminDashboard() {
   },[searchParams])
 
   return (
-    <ProtectedRoute>
-      <RoleRoute allowedRoles={["admin"]}>
+   
         <div className="flex min-h-screen bg-gray-100">
           {/* ===== Desktop Sidebar ===== */}
           <div className="hidden md:block">
-            <Suspense fallback={<div>Loading dashboard…</div>}>
+
               <AdminSidebar />
-            </Suspense>
+          
           </div>
 
           {/* ===== Mobile Sidebar Overlay ===== */}
@@ -42,9 +41,9 @@ export default function AdminDashboard() {
             <div className="fixed inset-0 z-40 flex">
               <div className="fixed inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
               <div className="relative z-50 w-64">
-                <Suspense fallback={<div>Loading dashboard…</div>}>
+
                   <AdminSidebar onLinkClick={() => setMobileOpen(false)} />
-                </Suspense>
+          
               </div>
             </div>
           )}
@@ -59,7 +58,19 @@ export default function AdminDashboard() {
            
           </div>
         </div>
-      </RoleRoute>
-    </ProtectedRoute>
+    
   );
+}
+
+
+export default function Admin(){
+  return(
+     <ProtectedRoute>
+      <RoleRoute allowedRoles={["admin"]}>
+        <Suspense fallback={<div>Loading dashboard…</div>}>
+          <AdminDashboard/>
+        </Suspense>
+      </RoleRoute>
+      </ProtectedRoute>
+  )
 }
