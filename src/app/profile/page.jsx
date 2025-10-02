@@ -21,6 +21,29 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const[showForm,setShowForm]=useState(false);
+  const [form, setForm] = useState({shopName: "",shopDescription: "",shopLogo: "",shopCertificate: "",});
+
+  const [requestStatus, setRequestStatus] = useState(null);
+   useEffect(() => {
+    const checkRequest = async () => {
+      try {
+const res = await fetch(`/api/seller-request?userId=${user._id}`, {
+      method: "GET",
+    });        
+    const data = await res.json();
+        if (res.status==200) {
+          setRequestStatus(data.status); 
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (user?._id) {
+      checkRequest();
+    }
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       setFormData({
@@ -72,6 +95,28 @@ export default function ProfilePage() {
       setMessage("Server error");
     } finally {
       setLoading(false);
+    }
+  };
+
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await fetch("/api/seller-request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: user._id,
+        ...form,
+      }),
+    });
+
+    if (res.ok) {
+      alert("Request submitted successfully!");
+      setShowForm(false);
+    } else {
+      alert("Failed to submit request");
     }
   };
 
@@ -130,6 +175,86 @@ export default function ProfilePage() {
           </button>
         </form>
       </div>
+
+      <div className="w-full flex items-center justify-center p-5">
+      {
+        user && user.role=="customer" &&
+         <button
+          onClick={()=>setShowForm(true)}
+          disabled={loading || requestStatus === "pending"}
+          className={`px-6 py-2 rounded-md text-white transition ${
+            requestStatus === "pending"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
+        >
+          {loading
+            ? "Submitting..."
+            : requestStatus === "pending"
+            ? "Request Pending"
+            : "Become a Seller"}
+        </button>
+        
+      }
+      </div>
+      {showForm && (
+        <div className="fixed inset-0 bg-transparent backdrop-blur-sm bg-opacity-50 flex items-center justify-center p-1 sm:p-0">
+          <div className="bg-white  p-6 rounded w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4 text-center text-green-500" >Request to Open a Shop</h2>
+            <form onSubmit={handleSubmit}  className="flex flex-col gap-4">
+              <input
+                type="text"
+                placeholder="Shop Name"
+                value={form.shopName}
+                onChange={(e) =>
+                  setForm({ ...form, shopName: e.target.value })
+                }
+                className="border p-2 rounded"
+                required
+              />
+              <textarea
+                placeholder="Shop Description"
+                value={form.shopDescription}
+                onChange={(e) =>
+                  setForm({ ...form, shopDescription: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder="Shop Logo URL"
+                value={form.shopLogo}
+                onChange={(e) =>
+                  setForm({ ...form, shopLogo: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+              <input
+                type="text"
+                placeholder="Shop Certificate URL"
+                value={form.shopCertificate}
+                onChange={(e) =>
+                  setForm({ ...form, shopCertificate: e.target.value })
+                }
+                className="border p-2 rounded"
+              />
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 border rounded"
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
