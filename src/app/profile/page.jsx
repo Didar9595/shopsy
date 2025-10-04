@@ -31,8 +31,9 @@ export default function ProfilePage() {
 const res = await fetch(`/api/seller-request?userId=${user._id}`, {
       method: "GET",
     });        
-    const data = await res.json();
-        if (res.status==200) {
+    
+        if (res.ok) {
+          const data = await res.json();
           setRequestStatus(data.status); 
         }
       } catch (err) {
@@ -115,6 +116,7 @@ const res = await fetch(`/api/seller-request?userId=${user._id}`, {
     if (res.ok) {
       alert("Request submitted successfully!");
       setShowForm(false);
+      setRequestStatus("pending")
     } else {
       alert("Failed to submit request");
     }

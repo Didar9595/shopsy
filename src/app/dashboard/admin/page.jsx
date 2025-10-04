@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import Greet from './tabs/greet'
 import ProfilePage from "@/app/profile/page";
 import { Suspense } from "react";
+import SellerRequests from "./tabs/sellerRequest";
 
 
  function AdminDashboard() {
@@ -24,6 +25,7 @@ import { Suspense } from "react";
     if(tabFromUrl){
       setTab(tabFromUrl)
     }
+    else setTab("greet")
   },[searchParams])
 
   return (
@@ -42,6 +44,7 @@ import { Suspense } from "react";
              {tab==='profile' && <ProfilePage/>}
              {tab==='posts' && <DashPosts/>}
              {tab==='users' && <DashUsers/>}
+             {tab==='sellerRequest' && <SellerRequests/>}
              {tab==='dash' && <DashboardComp/>}
            
           </div>

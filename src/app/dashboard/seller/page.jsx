@@ -24,6 +24,7 @@ import SellerSidebar from "@/app/components/Seller/SellerSidebar";
     if(tabFromUrl){
       setTab(tabFromUrl)
     }
+    else setTab("greet")
   },[searchParams])
 
   return (

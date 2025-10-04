@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { User, ShoppingBag, ShoppingCart, Heart,Menu,X } from "lucide-react";
+import { User, ShoppingBag, ShoppingCart, Heart,Menu,X,GitPullRequest } from "lucide-react";
 
 export default function CustomerSidebar({ onLinkClick }) {
   const searchParams = useSearchParams();
@@ -22,6 +22,7 @@ export default function CustomerSidebar({ onLinkClick }) {
     { href: "/dashboard/customer?tab=orders", label: "My Orders", icon: ShoppingBag },
     { href: "/dashboard/customer?tab=cart", label: "Cart", icon: ShoppingCart },
     { href: "/dashboard/customer?tab=wishlist", label: "Wishlist", icon: Heart },
+    { href: "/dashboard/customer?tab=pending", label: "Pending Seller Request", icon: GitPullRequest },
   ];
 
   return (

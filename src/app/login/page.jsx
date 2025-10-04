@@ -38,16 +38,15 @@ export default function LoginPage() {
       } else {
         login(data.token); // store token in AuthContext
         console.log(data.message)
-        router.push('/profile')
         // Redirect based on role
-        // const userRes = await fetch("/api/me", {
-        //   headers: { Authorization: `Bearer ${data.token}` },
-        // });
-        // const userData = await userRes.json();
+         const userRes = await fetch("/api/me", {
+          headers: { Authorization: `Bearer ${data.token}` },
+         });
+         const userData = await userRes.json();
 
-        // if (userData.role === "customer") router.push("/dashboard/customer");
-        // else if (userData.role === "seller") router.push("/dashboard/seller");
-        // else if (userData.role === "admin") router.push("/dashboard/admin");
+         if (userData.role === "customer") router.push("/dashboard/customer");
+         else if (userData.role === "seller") router.push("/dashboard/seller");
+         else if (userData.role === "admin") router.push("/dashboard/admin");
       }
     } catch (err) {
       console.error(err);

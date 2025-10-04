@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 // Import your tab components
 import Greet from "./tabs/greet";
 import ProfilePage from "@/app/profile/page";
+import Pending from "./tabs/pending";
 // import CustomerOrders from "./tabs/orders";
 // import CustomerCart from "./tabs/cart";
 // import CustomerWishlist from "./tabs/wishlist";
@@ -36,13 +37,15 @@ function CustomerDashboard() {
 
           
 
-          {/* ===== Main Content ===== */}
+          
           <div className="flex-1 flex flex-col p-4">
             {tab === "greet" && <Greet />}
             {tab === "profile" && <ProfilePage />}
             {tab === "orders" && <CustomerOrders />}
+            {/*
             {tab === "cart" && <CustomerCart />}
-            {tab === "wishlist" && <CustomerWishlist />}
+            {tab === "wishlist" && <CustomerWishlist />  */}
+            {tab === "pending" && <Pending/>}
           </div>
         </div>
       
