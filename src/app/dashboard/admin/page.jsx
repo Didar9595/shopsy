@@ -10,6 +10,7 @@ import Greet from './tabs/greet'
 import ProfilePage from "@/app/profile/page";
 import { Suspense } from "react";
 import SellerRequests from "./tabs/sellerRequest";
+import Users from "./tabs/users";
 
 
  function AdminDashboard() {
@@ -43,7 +44,7 @@ import SellerRequests from "./tabs/sellerRequest";
             {tab==='greet' && <Greet/>}
              {tab==='profile' && <ProfilePage/>}
              {tab==='posts' && <DashPosts/>}
-             {tab==='users' && <DashUsers/>}
+             {tab==='users' && <Users/>}
              {tab==='sellerRequest' && <SellerRequests/>}
              {tab==='dash' && <DashboardComp/>}
            
