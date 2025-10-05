@@ -9,6 +9,7 @@ import Greet from './tabs/greet'
 import ProfilePage from "@/app/profile/page";
 import { Suspense } from "react";
 import SellerSidebar from "@/app/components/Seller/SellerSidebar";
+import MyShop from "./tabs/myShop";
 
 
  function AdminDashboard() {
@@ -41,7 +42,7 @@ import SellerSidebar from "@/app/components/Seller/SellerSidebar";
           <div className="flex-1 flex flex-col">
             {tab==='greet' && <Greet/>}
              {tab==='profile' && <ProfilePage/>}
-             {tab==='posts' && <DashPosts/>}
+             {tab==='shop' && <MyShop/>}
              {tab==='users' && <DashUsers/>}
              {tab==='dash' && <DashboardComp/>}
            

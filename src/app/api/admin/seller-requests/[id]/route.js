@@ -2,6 +2,7 @@
 import { dbConnect } from "../../../../../../lib/dbConnect";
 import SellerRequest from "../../../../../../models/sellerReqModel";
 import NewUser from "../../../../../../models/userModel";
+import Shop from "../../../../../../models/shopModel";
 
 export async function PUT(req, { params }) {
   await dbConnect();
@@ -22,11 +23,22 @@ export async function PUT(req, { params }) {
     }
 
     if (status === "accepted") {
-      await NewUser.findByIdAndUpdate(request.userId, {
-        role: "seller",
-        isSellerApproved: true,
+      const updatedUser = await NewUser.findByIdAndUpdate(request.userId, 
+        {role: "seller",isSellerApproved: true,} ,
+        { new: true }
+      );
+
+       await Shop.create({
+        owner: updatedUser._id,
+        shopName: request.shopName,
+        shopDescription: request.shopDescription,
+        shopLogo: request.shopLogo,
+        shopCertificate: request.shopCertificate,
+        isActive: true,
       });
     }
+
+    
 
     return new Response(JSON.stringify({ message: `Request ${status}`, request }), { status: 200 });
   } catch (error) {

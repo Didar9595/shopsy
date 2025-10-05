@@ -69,9 +69,9 @@ function Navbar() {
             {isLogin ? (
                <p onClick={handleLogout} className="w-[fit-content] p-2 flex flex-row items-center justify-center gap-2 cursor-pointer text-rose-500"> <LogOut size={16}/> Logout</p>
             ) : (
-              <Link href="/register">
+              <Link href="/login">
                 <button className="px-8 py-2 bg-gray-700 hover:bg-gray-900 transition text-white rounded-md hover:shadow-gray-400 hover:shadow-sm cursor-pointer">
-                  Register
+                  Login
                 </button>
               </Link>
             )}
@@ -143,11 +143,11 @@ function Navbar() {
               </button>
             ) : (
               <Link
-                href="/register"
+                href="/login"
                 onClick={() => setOpen(false)}
                 className="px-4 py-2 bg-gray-700 hover:bg-gray-900 text-white text-center rounded-md"
               >
-                Register
+                Login
               </Link>
             )}
           </div>
