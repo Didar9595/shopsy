@@ -10,6 +10,7 @@ import ProfilePage from "@/app/profile/page";
 import { Suspense } from "react";
 import SellerSidebar from "@/app/components/Seller/SellerSidebar";
 import MyShop from "./tabs/myShop";
+import SellerProducts from "./tabs/products";
 
 
  function AdminDashboard() {
@@ -43,7 +44,7 @@ import MyShop from "./tabs/myShop";
             {tab==='greet' && <Greet/>}
              {tab==='profile' && <ProfilePage/>}
              {tab==='shop' && <MyShop/>}
-             {tab==='users' && <DashUsers/>}
+             {tab==='products' && <SellerProducts/>}
              {tab==='dash' && <DashboardComp/>}
            
           </div>
