@@ -19,7 +19,7 @@ const productSchema = new mongoose.Schema(
     images: [String], // Firebase URLs for product-level images
     variants: [variantSchema],
     shop: { type: mongoose.Schema.Types.ObjectId, ref: "Shop", required: true },
-    seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: "NewUser", required: true },
   },
   { timestamps: true }
 );
