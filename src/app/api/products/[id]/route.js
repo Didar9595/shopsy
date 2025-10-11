@@ -3,6 +3,7 @@ import Product from "../../../../../models/productModel";
 import { verifyToken } from "../../../../../utils/jwt";
 import Shop from "../../../../../models/shopModel";
 import User from "../../../../../models/userModel";
+import Review from "../../../../../models/reviewModel";
 
 export async function PUT(req, { params }) {
   await dbConnect();
@@ -66,7 +67,23 @@ export async function GET(req, { params }) {
       );
     }
 
-    return new Response(JSON.stringify({ success: true, product }), {
+    const reviews = await Review.find({ productId: id });
+
+    //  Calculate average rating
+    const totalReviews = reviews.length;
+    const avgRating =
+      totalReviews > 0
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+        : 0;
+
+    // Add rating info to response
+    const productWithRating = {
+      avgRating: Number(avgRating.toFixed(1)),
+      totalReviews,
+    };
+
+
+    return new Response(JSON.stringify({ success: true, product,productWithRating }), {
       status: 200,
     });
   } catch (error) {

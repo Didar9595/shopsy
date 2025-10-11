@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 
+
 export default function ProductCard({ product }) {
   const firstVariant = product.variants?.[0] || {};
   const discount = firstVariant.mrp
@@ -30,6 +31,7 @@ export default function ProductCard({ product }) {
             <span className="text-sm text-gray-400 line-through">₹{firstVariant.mrp}</span>
           )}
         </div>
+        
       </div>
     </Link>
   );

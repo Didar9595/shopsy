@@ -3,22 +3,32 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Star, ShoppingCart, Heart } from "lucide-react";
+import ProductReviews from "@/app/components/ProductReviews";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [loading, setLoading] = useState(true);
+    const [ratingData, setRatingData] = useState({ avgRating: 0, totalReviews: 0 });
+    const [error,setError]=useState()
+
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await fetch(`/api/products/${id}`);
-        const data = await res.json();
+        const data = await res.json()
+        
         setProduct(data.product);
         if (data.product?.variants?.length > 0) {
           setSelectedVariant(data.product.variants[0]);
         }
+        setRatingData({
+          avgRating: data.productWithRating.avgRating || 0,
+          totalReviews: data.productWithRating.totalReviews || 0,
+        });
+
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -75,11 +85,18 @@ export default function ProductDetailPage() {
             <p className="text-gray-500 mb-2 capitalize">{product.category}</p>
 
             <div className="flex items-center gap-1 text-yellow-500 mb-3">
-              {[...Array(4)].map((_, i) => (
-                <Star key={i} size={18} fill="gold" />
-              ))}
-              <span className="text-gray-600 ml-2">(4.2 / 5)</span>
-            </div>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Star
+                key={i}
+                size={18}
+                fill={i <= Math.round(ratingData.avgRating) ? "gold" : "none"}
+                stroke="gold"
+              />
+            ))}
+            <span className="text-gray-600 ml-2">
+              ({ratingData.avgRating.toFixed(1)} / 5 • {ratingData.totalReviews} reviews)
+            </span>
+          </div>
 
             <p className="text-gray-700 mb-4">{product.description}</p>
 
@@ -160,17 +177,21 @@ export default function ProductDetailPage() {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <button className="flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold shadow">
+            <button className="flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-1 rounded-lg font-semibold shadow">
               <ShoppingCart size={20} /> Add to Cart
             </button>
-            <button className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold shadow">
+            <button className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-1 rounded-lg font-semibold shadow">
               Buy Now
             </button>
-            <button className="flex items-center justify-center gap-2 border px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+            <button className="flex items-center justify-center gap-2 border px-6 py-1 rounded-lg font-semibold hover:bg-gray-100">
               <Heart size={20} /> Wishlist
             </button>
           </div>
         </div>
+      </div>
+
+      <div>
+        <ProductReviews productId={product._id} />
       </div>
 
       {/* Related Products */}
