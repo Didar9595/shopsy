@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { PackageIcon, Search, ShoppingCart, Menu, X,LogOut,Handbag,LayoutDashboard,CircleAlert,House } from "lucide-react";
+import { PackageIcon, Search, ShoppingCart, Menu, X,LogOut,Handbag,LayoutDashboard,CircleAlert,House, Heart } from "lucide-react";
 import { useAuth } from "../../../context/AuthProvider";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +9,7 @@ function Navbar() {
   const { user, logout, isLogin } = useAuth();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+
 
   const handleLogout = () => {
     logout();
@@ -41,7 +42,7 @@ function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden sm:flex items-center gap-4 lg:gap-8 text-slate-600">
             <Link href="/">Home</Link>
-            <Link href="/shop">My Order</Link>
+            <Link href="/wishlist">Wishlist</Link>
             <Link href="/">About</Link>
             <Link href={dashboardLink}>Dashboard</Link>
 
@@ -55,15 +56,13 @@ function Navbar() {
               />
             </form>
 
-            <Link
+             <Link
               href="/cart"
               className="relative flex items-center gap-2 text-slate-600"
             >
               <ShoppingCart size={18} />
               Cart
-              <button className="absolute -top-1 left-3 text-[8px] text-white bg-slate-600 size-3.5 rounded-full cursor-pointer">
-                0
-              </button>
+              
             </Link>
 
             {isLogin ? (
@@ -106,11 +105,11 @@ function Navbar() {
              <House /> Home
             </Link>
             <Link
-              href="/shop"
+              href="/wishlist"
               onClick={() => setOpen(false)}
               className="hover:text-green-600 flex items-center gap-2"
             >
-              <Handbag /> My Orders
+              <Heart /> Wishlist
             </Link>
             <Link
               href="/"
@@ -126,11 +125,7 @@ function Navbar() {
             >
               <LayoutDashboard size={18}/> Dashboard
             </Link>
-            <Link
-              href="/cart"
-              onClick={() => setOpen(false)}
-              className="hover:text-green-600 flex items-center gap-2"
-            >
+            <Link href="/cart" onClick={() => setOpen(false)} className="hover:text-green-600 flex items-center gap-2">
               <ShoppingCart size={18} /> Cart
             </Link>
 

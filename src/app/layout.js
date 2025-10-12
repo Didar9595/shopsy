@@ -18,10 +18,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${outfit.className} antialiased`}
       >
-          <AuthProvider>
-          <Navbar/>
-        {children}
-        <FooterComp/>
+        <AuthProvider>
+        
+            <Navbar />
+            {children}
+            <FooterComp />
+        
         </AuthProvider>
       </body>
     </html>

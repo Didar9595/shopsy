@@ -4,14 +4,18 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Star, ShoppingCart, Heart } from "lucide-react";
 import ProductReviews from "@/app/components/ProductReviews";
+import { useAuth } from "../../../../context/AuthProvider";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [loading, setLoading] = useState(true);
-    const [ratingData, setRatingData] = useState({ avgRating: 0, totalReviews: 0 });
-    const [error,setError]=useState()
+  const [ratingData, setRatingData] = useState({ avgRating: 0, totalReviews: 0 });
+  const { user } = useAuth();
+
+  const [inWishlist, setInWishlist] = useState(false)
+
 
 
   useEffect(() => {
@@ -19,7 +23,7 @@ export default function ProductDetailPage() {
       try {
         const res = await fetch(`/api/products/${id}`);
         const data = await res.json()
-        
+
         setProduct(data.product);
         if (data.product?.variants?.length > 0) {
           setSelectedVariant(data.product.variants[0]);
@@ -29,6 +33,21 @@ export default function ProductDetailPage() {
           totalReviews: data.productWithRating.totalReviews || 0,
         });
 
+        // Check if product is in wishlist
+        if (user) {
+          const wlRes = await fetch("/api/wishlist", {
+            method: "GET",
+            headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+          });
+          if (wlRes.ok) {
+            const wlData = await wlRes.json();
+            const exists = wlData.wishlist?.items?.some(
+              (item) => item.product._id === data.product._id
+            );
+            setInWishlist(exists);
+          }
+        }
+
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -37,6 +56,27 @@ export default function ProductDetailPage() {
     };
     if (id) fetchProduct();
   }, [id]);
+
+
+
+  const handleAddToWishlist = async () => {
+    if (!user) { router.push("/login"); return; }
+
+    const method = inWishlist ? "DELETE" : "POST";
+    const res = await fetch("/api/wishlist", {
+      method,
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${localStorage.getItem("token")}` },
+      body: JSON.stringify({ productId: product._id }),
+    });
+
+    if (res.ok) {
+      setInWishlist(!inWishlist); // toggle state
+      alert(inWishlist ? "Removed from wishlist" : "Added to wishlist");
+    } else {
+      const e = await res.json();
+      alert(e.message || "Failed");
+    }
+  };
 
   if (loading) {
     return <div className="text-center py-10 text-gray-500">Loading product details...</div>;
@@ -49,7 +89,7 @@ export default function ProductDetailPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row gap-8">
-        
+
         {/* LEFT: Product Images */}
         <div className="flex flex-col items-center md:w-1/2">
           <img
@@ -70,9 +110,8 @@ export default function ProductDetailPage() {
                 onClick={() =>
                   setSelectedVariant({ ...selectedVariant, images: [img] })
                 }
-                className={`w-20 h-20 object-cover border rounded-md cursor-pointer ${
-                  selectedVariant?.images?.[0] === img ? "border-blue-500" : "border-gray-300"
-                }`}
+                className={`w-20 h-20 object-cover border rounded-md cursor-pointer ${selectedVariant?.images?.[0] === img ? "border-blue-500" : "border-gray-300"
+                  }`}
               />
             ))}
           </div>
@@ -85,18 +124,18 @@ export default function ProductDetailPage() {
             <p className="text-gray-500 mb-2 capitalize">{product.category}</p>
 
             <div className="flex items-center gap-1 text-yellow-500 mb-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Star
-                key={i}
-                size={18}
-                fill={i <= Math.round(ratingData.avgRating) ? "gold" : "none"}
-                stroke="gold"
-              />
-            ))}
-            <span className="text-gray-600 ml-2">
-              ({ratingData.avgRating.toFixed(1)} / 5 • {ratingData.totalReviews} reviews)
-            </span>
-          </div>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star
+                  key={i}
+                  size={18}
+                  fill={i <= Math.round(ratingData.avgRating) ? "gold" : "none"}
+                  stroke="gold"
+                />
+              ))}
+              <span className="text-gray-600 ml-2">
+                ({ratingData.avgRating.toFixed(1)} / 5 • {ratingData.totalReviews} reviews)
+              </span>
+            </div>
 
             <p className="text-gray-700 mb-4">{product.description}</p>
 
@@ -109,11 +148,10 @@ export default function ProductDetailPage() {
                     <button
                       key={i}
                       onClick={() => setSelectedVariant(v)}
-                      className={`border px-3 py-1 rounded-md ${
-                        selectedVariant?.sku === v.sku
+                      className={`border px-3 py-1 rounded-md ${selectedVariant?.sku === v.sku
                           ? "bg-blue-600 text-white border-blue-600"
                           : "hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {v.attributes?.color
                         ? v.attributes.color
@@ -138,7 +176,7 @@ export default function ProductDetailPage() {
                     {Math.round(
                       ((selectedVariant.mrp - selectedVariant.price) /
                         selectedVariant.mrp) *
-                        100
+                      100
                     )}
                     % off
                   </span>
@@ -146,11 +184,10 @@ export default function ProductDetailPage() {
                 <p className="text-gray-600 mt-1">
                   Stock:{" "}
                   <span
-                    className={`font-semibold ${
-                      selectedVariant.stock > 0
+                    className={`font-semibold ${selectedVariant.stock > 0
                         ? "text-green-600"
                         : "text-red-500"
-                    }`}
+                      }`}
                   >
                     {selectedVariant.stock > 0
                       ? `${selectedVariant.stock} available`
@@ -177,15 +214,19 @@ export default function ProductDetailPage() {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <button className="flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-1 rounded-lg font-semibold shadow">
-              <ShoppingCart size={20} /> Add to Cart
-            </button>
+
             <button className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-1 rounded-lg font-semibold shadow">
               Buy Now
             </button>
-            <button className="flex items-center justify-center gap-2 border px-6 py-1 rounded-lg font-semibold hover:bg-gray-100">
-              <Heart size={20} /> Wishlist
+            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex flex-row justify-center items-center"><ShoppingCart /> Add to Cart</button>
+            <button
+              onClick={handleAddToWishlist}
+              className="border hover:bg-gray-100 rounded px-3 py-1 flex flex-row justify-center items-center"
+            >
+              <Heart size={20} fill={inWishlist ? "red" : "none"} stroke={inWishlist ? "red" : "black"} />
+              Wishlist
             </button>
+
           </div>
         </div>
       </div>
