@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Star, ShoppingCart, Heart } from "lucide-react";
 import ProductReviews from "@/app/components/ProductReviews";
 import { useAuth } from "../../../../context/AuthProvider";
+import { Spinner } from "flowbite-react";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -15,7 +16,8 @@ export default function ProductDetailPage() {
   const { user } = useAuth();
 
   const [inWishlist, setInWishlist] = useState(false)
-    const [isSellerOfThisProduct, setIsSellerOfThisProduct] = useState(false);
+  const [isSellerOfThisProduct, setIsSellerOfThisProduct] = useState(false);
+
 
 
 
@@ -93,6 +95,31 @@ export default function ProductDetailPage() {
     }
   }, [user, product]);
 
+  //add to cart
+  const handleAddToCart = async () => {
+  try {
+    const res = await fetch("/api/cart", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ productId: product._id, quantity: 1 }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert("Added to cart!");
+      window.dispatchEvent(new Event("cartUpdated")); // refresh navbar
+    }
+    else alert(data.message);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+
+
 
   if (loading) {
     return <div className="text-center py-10 text-gray-500">Loading product details...</div>;
@@ -165,8 +192,8 @@ export default function ProductDetailPage() {
                       key={i}
                       onClick={() => setSelectedVariant(v)}
                       className={`border px-3 py-1 rounded-md ${selectedVariant?.sku === v.sku
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "hover:bg-gray-100"
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "hover:bg-gray-100"
                         }`}
                     >
                       {v.attributes?.color
@@ -201,8 +228,8 @@ export default function ProductDetailPage() {
                   Stock:{" "}
                   <span
                     className={`font-semibold ${selectedVariant.stock > 0
-                        ? "text-green-600"
-                        : "text-red-500"
+                      ? "text-green-600"
+                      : "text-red-500"
                       }`}
                   >
                     {selectedVariant.stock > 0
@@ -231,29 +258,38 @@ export default function ProductDetailPage() {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
 
-            <button className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-1 rounded-lg font-semibold shadow">
+            {/* Order Button */}
+            <button disabled={isSellerOfThisProduct} className={`flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-1 rounded-lg font-semibold shadow ${isSellerOfThisProduct
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-100 cursor-pointer"
+              }`}>
               Buy Now
             </button>
-            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex flex-row justify-center items-center"><ShoppingCart /> Add to Cart</button>
-                <button
-      onClick={handleAddToWishlist}
-      disabled={isSellerOfThisProduct}
-      className={`p-2 rounded-full border flex items-center justify-center transition-all ${
-        isSellerOfThisProduct
-          ? "opacity-50 cursor-not-allowed"
-          : "hover:bg-gray-100 cursor-pointer"
-      }`}
-      title={
-        isSellerOfThisProduct
-          ? "You cannot add your own product to wishlist"
-          : "Add to wishlist"
-      }
-    >
-      <Heart size={20} fill={inWishlist ? "red" : "none"} stroke={inWishlist ? "red" : "black"} />
-    </button>
 
+            {/* Add to Cart Button */}
+            <button disabled={isSellerOfThisProduct} onClick={handleAddToCart} className={`bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex flex-row justify-center items-center ${isSellerOfThisProduct
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-100 cursor-pointer"
+              }`}><ShoppingCart /> Add to Cart</button>
 
+            {/* Wishlist Button */}
+            <button
+              onClick={handleAddToWishlist}
+              disabled={isSellerOfThisProduct}
+              className={`p-2 rounded-full border flex items-center justify-center transition-all ${isSellerOfThisProduct
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-100 cursor-pointer"
+                }`}
+              title={
+                isSellerOfThisProduct
+                  ? "You cannot add your own product to wishlist"
+                  : "Add to wishlist"
+              }
+            >
+              <Heart size={20} fill={inWishlist ? "red" : "none"} stroke={inWishlist ? "red" : "black"} />
+            </button>
           </div>
+
         </div>
       </div>
 

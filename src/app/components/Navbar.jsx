@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Link from "next/link";
-import { PackageIcon, Search, ShoppingCart, Menu, X,LogOut,Handbag,LayoutDashboard,CircleAlert,House, Heart } from "lucide-react";
+import { PackageIcon, Search, ShoppingCart, Menu, X, LogOut, Handbag, LayoutDashboard, CircleAlert, House, Heart } from "lucide-react";
 import { useAuth } from "../../../context/AuthProvider";
 import { useRouter } from "next/navigation";
 
@@ -10,8 +10,36 @@ function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
+  const [cartCount, setCartCount] = useState(0);
+
+  //fetch cart count
+  const fetchCartCount = async () => {
+    try {
+      if (!localStorage.getItem("token")) return;
+      const res = await fetch("/api/cart", {
+        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCartCount(data.count || 0);
+      }
+    } catch (err) {
+      console.error("Error fetching cart count:", err);
+    }
+  };
+  useEffect(() => {
+    if (isLogin) fetchCartCount();
+    else setCartCount(0); // reset when logged out
+  }, [isLogin]);
+  useEffect(() => {
+    const listener = () => fetchCartCount();
+    window.addEventListener("cartUpdated", listener);
+    return () => window.removeEventListener("cartUpdated", listener);
+  }, []);
+
 
   const handleLogout = () => {
+    setCartCount(0);
     logout();
     setOpen(false);
   };
@@ -20,8 +48,8 @@ function Navbar() {
     user?.role === "admin"
       ? "/dashboard/admin"
       : user?.role === "seller"
-      ? "/dashboard/seller"
-      : "/dashboard/customer";
+        ? "/dashboard/seller"
+        : "/dashboard/customer";
 
   return (
     <nav className="relative bg-white">
@@ -56,17 +84,21 @@ function Navbar() {
               />
             </form>
 
-             <Link
+            <Link
               href="/cart"
               className="relative flex items-center gap-2 text-slate-600"
             >
               <ShoppingCart size={18} />
               Cart
-              
+              {cartCount > 0 && (
+                <span className="absolute -top-1 left-3 text-[8px] text-white bg-slate-600 size-3.5 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             {isLogin ? (
-               <p onClick={handleLogout} className="w-[fit-content] p-2 flex flex-row items-center justify-center gap-2 cursor-pointer text-rose-500"> <LogOut size={16}/> Logout</p>
+              <p onClick={handleLogout} className="w-[fit-content] p-2 flex flex-row items-center justify-center gap-2 cursor-pointer text-rose-500"> <LogOut size={16} /> Logout</p>
             ) : (
               <Link href="/login">
                 <button className="px-8 py-2 bg-gray-700 hover:bg-gray-900 transition text-white rounded-md hover:shadow-gray-400 hover:shadow-sm cursor-pointer">
@@ -102,7 +134,7 @@ function Navbar() {
               onClick={() => setOpen(false)}
               className="hover:text-green-600 flex items-center gap-2"
             >
-             <House /> Home
+              <House /> Home
             </Link>
             <Link
               href="/wishlist"
@@ -123,10 +155,15 @@ function Navbar() {
               onClick={() => setOpen(false)}
               className="hover:text-green-600 flex items-center gap-2"
             >
-              <LayoutDashboard size={18}/> Dashboard
+              <LayoutDashboard size={18} /> Dashboard
             </Link>
             <Link href="/cart" onClick={() => setOpen(false)} className="hover:text-green-600 flex items-center gap-2">
               <ShoppingCart size={18} /> Cart
+              {cartCount > 0 && (
+                <span className="ml-auto text-xs font-semibold text-white bg-slate-600 px-2 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             {isLogin ? (
