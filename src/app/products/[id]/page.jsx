@@ -15,6 +15,8 @@ export default function ProductDetailPage() {
   const { user } = useAuth();
 
   const [inWishlist, setInWishlist] = useState(false)
+    const [isSellerOfThisProduct, setIsSellerOfThisProduct] = useState(false);
+
 
 
 
@@ -71,12 +73,26 @@ export default function ProductDetailPage() {
 
     if (res.ok) {
       setInWishlist(!inWishlist); // toggle state
-      alert(inWishlist ? "Removed from wishlist" : "Added to wishlist");
+      //alert(inWishlist ? "Removed from wishlist" : "Added to wishlist");
     } else {
       const e = await res.json();
       alert(e.message || "Failed");
     }
   };
+
+  //disable wishlist button for the seller of that product
+  useEffect(() => {
+    if (
+      user &&
+      product?.seller &&
+      (user._id === product.seller._id || user._id === product.seller)
+    ) {
+      setIsSellerOfThisProduct(true);
+    } else {
+      setIsSellerOfThisProduct(false);
+    }
+  }, [user, product]);
+
 
   if (loading) {
     return <div className="text-center py-10 text-gray-500">Loading product details...</div>;
@@ -219,13 +235,23 @@ export default function ProductDetailPage() {
               Buy Now
             </button>
             <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex flex-row justify-center items-center"><ShoppingCart /> Add to Cart</button>
-            <button
-              onClick={handleAddToWishlist}
-              className="border hover:bg-gray-100 rounded px-3 py-1 flex flex-row justify-center items-center"
-            >
-              <Heart size={20} fill={inWishlist ? "red" : "none"} stroke={inWishlist ? "red" : "black"} />
-              Wishlist
-            </button>
+                <button
+      onClick={handleAddToWishlist}
+      disabled={isSellerOfThisProduct}
+      className={`p-2 rounded-full border flex items-center justify-center transition-all ${
+        isSellerOfThisProduct
+          ? "opacity-50 cursor-not-allowed"
+          : "hover:bg-gray-100 cursor-pointer"
+      }`}
+      title={
+        isSellerOfThisProduct
+          ? "You cannot add your own product to wishlist"
+          : "Add to wishlist"
+      }
+    >
+      <Heart size={20} fill={inWishlist ? "red" : "none"} stroke={inWishlist ? "red" : "black"} />
+    </button>
+
 
           </div>
         </div>
