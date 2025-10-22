@@ -160,7 +160,8 @@ function AddressModal({ address, setAddress, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+    <Suspense fallback={<div>Loading Change Address…</div>}>
+      <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 w-96">
         <h2 className="text-lg font-semibold mb-3">Change Address</h2>
 
@@ -191,5 +192,6 @@ function AddressModal({ address, setAddress, onClose }) {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }
