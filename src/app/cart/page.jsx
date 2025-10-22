@@ -1,11 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../../context/AuthProvider";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+const [address, setAddress] = useState({
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "",
+  });  const [editingAddress, setEditingAddress] = useState(false);
+  const {user}=useAuth()
 
   const fetchCart = async () => {
     try {
@@ -19,6 +28,9 @@ export default function CartPage() {
     } finally {
       setLoading(false);
     }
+  };
+    const fetchUser = async () => {
+    setAddress(user?.address);
   };
 
   const updateQuantity = async (productId, quantity) => {
@@ -48,13 +60,52 @@ export default function CartPage() {
     }
   };
 
-  const handleCheckout = () => {
-    alert("Proceeding to checkout...");
+  const handleCheckout = async () => {
+    if (!address || !address.street) {
+      return alert("Please add your delivery address first!");
+    }
+
+    const orderBody = {
+      items: cart.items.map((it) => ({
+        product: it.product._id,
+        variantSku: it.variant?.sku || "",
+        variantAttributes: it.variant?.attributes || {},
+        quantity: it.quantity,
+        priceAtAdd: it.priceAtAdd,
+        image: it.variant?.images?.[0] || it.product.images?.[0] || "", //  fallback
+      })),
+      totalAmount: subtotal,
+      shippingAddress: address,
+      fromCart:true,
+    };
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(orderBody),
+      });
+
+      if (res.ok) {
+        alert("✅ Order placed successfully!");
+        router.push("/order");
+      } else {
+        const data = await res.json();
+        alert(data.message || "Failed to place order");
+      }
+    } catch (error) {
+      console.error("Order placement error:", error);
+      alert("Error placing order.");
+    }
   };
+
 
   useEffect(() => {
     fetchCart();
-    
+    fetchUser();
   }, []);
 
   if (loading) return <p className="p-6 h-[90vh] text-center text-xl">Loading cart...</p>;
@@ -122,12 +173,59 @@ export default function CartPage() {
             <span>₹{subtotal}</span>
           </div>
         </div>
+
+        {/* Address Section */}
+        <div className="mt-6">
+          <h4 className="font-semibold">Delivery Address</h4>
+          {editingAddress ? (
+            <div className="grid gap-2 mt-2">
+              {["street", "city", "state", "zip", "country"].map((field) => (
+                <input
+                  key={field}
+                  type="text"
+                  placeholder={field}
+                  value={address[field] || ""}
+                  onChange={(e) =>
+                    setAddress({ ...address, [field]: e.target.value })
+                  }
+                  className="border p-2 rounded text-sm"
+                />
+              ))}
+              <button
+                onClick={() => setEditingAddress(false)}
+                className="text-blue-600 mt-1"
+              >
+                Save Address
+              </button>
+            </div>
+          ) : (
+            <div className="text-gray-700 mt-1 space-y-1">
+              <p>{address.street}</p>
+              <p>
+                {address.city}, {address.state} - {address.zip}
+              </p>
+              <p>{address.country}</p>
+              <button
+                onClick={() => setEditingAddress(true)}
+                className="text-blue-600 mt-2"
+              >
+                Change Address
+              </button>
+            </div>
+          )}
+        </div>
         <button
+          onClick={handleCheckout}
+          className="mt-6 w-full bg-green-600 text-white py-2 rounded cursor-pointer"
+        >
+          Place Order
+        </button>
+        {/* <button
           onClick={handleCheckout}
           className="mt-4 w-full bg-green-600 text-white py-2 rounded"
         >
           Proceed to Checkout
-        </button>
+        </button> */}
       </aside>
     </div>
   );

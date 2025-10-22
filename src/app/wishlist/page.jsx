@@ -41,7 +41,7 @@ export default function WishlistPage() {
         <p className="bg-slate-700 text-white text-xl md:text-2xl font-bold p-2 md:px-8 md:py-3 w-full">My Wishlist</p>
         <div className="p-6 max-w-[fit-content] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
       {wishlist.map((p) => (
-        <div key={p.product._id} className="bg-white px-6 py-3 rounded shadow">
+        <div key={p.product._id} className="bg-white px-6 py-3 rounded shadow flex flex-col justify-between">
           <img src={p?.product?.images?.[0]} alt={p.product.title} className="w-[30vh] object-cover rounded" />
           <h3 className="font-semibold mt-2">{p.product.title}</h3>
           <p className="text-green-700 font-bold mt-1">₹{p.product.variants?.[0]?.price}</p>

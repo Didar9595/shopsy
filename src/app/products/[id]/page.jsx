@@ -6,6 +6,7 @@ import { Star, ShoppingCart, Heart } from "lucide-react";
 import ProductReviews from "@/app/components/ProductReviews";
 import { useAuth } from "../../../../context/AuthProvider";
 import { Spinner } from "flowbite-react";
+import { useRouter } from "next/navigation";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export default function ProductDetailPage() {
   const [inWishlist, setInWishlist] = useState(false)
   const [isSellerOfThisProduct, setIsSellerOfThisProduct] = useState(false);
 
+  const router=useRouter()
 
 
 
@@ -116,6 +118,22 @@ export default function ProductDetailPage() {
     console.error(error);
   }
 };
+
+// Buy Now → Create a direct order then redirect
+  const handleBuyNow = () => {
+    if (!user) return router.push("/login");
+
+    const params = new URLSearchParams({
+      productId: product._id,
+      variantSku: selectedVariant?.sku || "",
+      price: selectedVariant?.price || product.price || 0,
+      quantity: "1",
+      fromCart: "false",
+      image:selectedVariant?.images[0],
+    }).toString();
+
+    router.push(`/checkout?${params}`);
+  };
 
 
 
@@ -259,10 +277,13 @@ export default function ProductDetailPage() {
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
 
             {/* Order Button */}
-            <button disabled={isSellerOfThisProduct} className={`flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-1 rounded-lg font-semibold shadow ${isSellerOfThisProduct
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-100 cursor-pointer"
-              }`}>
+            <button
+              onClick={handleBuyNow}
+              disabled={isSellerOfThisProduct}
+              className={`flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold shadow ${
+                isSellerOfThisProduct ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
               Buy Now
             </button>
 
