@@ -91,6 +91,7 @@ const [address, setAddress] = useState({
 
       if (res.ok) {
         alert("✅ Order placed successfully!");
+        window.dispatchEvent(new Event("cartUpdated")); // 🔔 refresh navbar
         router.push("/order");
       } else {
         const data = await res.json();
@@ -218,7 +219,7 @@ const [address, setAddress] = useState({
           onClick={handleCheckout}
           className="mt-6 w-full bg-green-600 text-white py-2 rounded cursor-pointer"
         >
-          Place Order
+          Checkout
         </button>
         {/* <button
           onClick={handleCheckout}
