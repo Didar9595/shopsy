@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../../../context/AuthProvider";
 
@@ -78,7 +78,8 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <Suspense fallback={<div>Loading Checkout…</div>}>
+      <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4 bg-green-500 text-white p-4">Checkout</h1>
 
       {/* Shipping Address */}
@@ -142,6 +143,7 @@ export default function CheckoutPage() {
         />
       )}
     </div>
+    </Suspense>
   );
 }
 
