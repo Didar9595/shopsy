@@ -5,13 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../../../context/AuthProvider";
 
 export default function CheckoutPage() {
+    const searchParams = useSearchParams();
   const [cartItems, setCartItems] = useState([]);
   const [address, setAddress] = useState({});
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {user}=useAuth()
-  const searchParams = useSearchParams();
 
   const fromCart = searchParams.get("fromCart") === "true";
   const productId = searchParams.get("productId");
