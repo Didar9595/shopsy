@@ -71,6 +71,7 @@ function Navbar() {
           <div className="hidden sm:flex items-center gap-4 lg:gap-8 text-slate-600">
             <Link href="/">Home</Link>
             <Link href="/wishlist">Wishlist</Link>
+            <Link href="/order">Orders</Link>
             <Link href="/">About</Link>
             <Link href={dashboardLink}>Dashboard</Link>
 

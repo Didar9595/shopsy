@@ -106,7 +106,14 @@ export default function ProductDetailPage() {
         "Content-Type": "application/json",
         authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ productId: product._id, quantity: 1 }),
+      body: JSON.stringify({
+        productId: product._id,
+        quantity: 1,
+        variantSku: selectedVariant?.sku || "",
+        variantAttributes: selectedVariant?.attributes || {},
+        variantImages: selectedVariant?.images || [],
+        priceAtAdd: selectedVariant?.price || product.price,
+      }),
     });
     const data = await res.json();
     if (res.ok) {
@@ -209,7 +216,7 @@ export default function ProductDetailPage() {
                     <button
                       key={i}
                       onClick={() => setSelectedVariant(v)}
-                      className={`border px-3 py-1 rounded-md ${selectedVariant?.sku === v.sku
+                      className={`border px-3 py-1 rounded-md cursor-pointer ${selectedVariant?.sku === v.sku
                         ? "bg-blue-600 text-white border-blue-600"
                         : "hover:bg-gray-100"
                         }`}
@@ -280,7 +287,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleBuyNow}
               disabled={isSellerOfThisProduct}
-              className={`flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold shadow ${
+              className={`cursor-pointer flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold shadow ${
                 isSellerOfThisProduct ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >

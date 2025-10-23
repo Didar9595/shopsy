@@ -19,7 +19,7 @@ export async function GET() {
       .slice(0, 10);
 
     // Category-wise sections (limit to some popular ones)
-    const categories = ["Electronics", "Clothes", "Home Appliances", "Footwear"];
+    const categories = ["Electronics", "Clothes","Sports","Beauty","Books","Home & Kitchen"];
     const categoryWise = {};
     for (const cat of categories) {
       categoryWise[cat] = await Product.find({ category: cat }).limit(8).lean();

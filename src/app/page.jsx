@@ -4,11 +4,13 @@ import Newsletter from "./components/Newsletter";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProductCard from "./components/ProductCard";
+import { useAuth } from "../../context/AuthProvider";
 
 export default function Home() {
   const [data, setData] = useState({ latest: [], bestDeals: [], categoryWise: {} });
   const [loading, setLoading] = useState(true);
-    useEffect(() => {
+  const { user } = useAuth()
+  useEffect(() => {
     const fetchHomeData = async () => {
       try {
         const res = await fetch("/api/products/home");
@@ -23,7 +25,7 @@ export default function Home() {
     fetchHomeData();
   }, []);
 
-  if (loading) return <p className="text-center mt-10 text-gray-600">Loading products...</p>;
+  if (loading) return <p className="text-center mt-10 text-gray-600 min-h-[70vh]">Loading products...</p>;
 
   const Section = ({ title, products }) => (
     <section className="mb-10">
@@ -43,19 +45,19 @@ export default function Home() {
 
   return (
     <div className="">
-      <Hero/>
-      
+      <Hero />
+
 
       <div className="flex flex-col gap-12 p-2 md:px-18 md:py-4">
         <Section title="Latest Products" products={data.latest} />
-      <Section title="Best Deals" products={data.bestDeals} />
+        <Section title="Best Deals" products={data.bestDeals} />
 
-      {Object.entries(data.categoryWise).map(([cat, products]) => (
-        <Section key={cat} title={cat} products={products} />
-      ))}
+        {Object.entries(data.categoryWise).map(([cat, products]) => (
+          <Section key={cat} title={cat} products={products} />
+        ))}
       </div>
 
-<Newsletter/>
+      <Newsletter />
     </div>
   );
 }

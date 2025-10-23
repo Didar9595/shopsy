@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         const data = await res.json();
         setUser(data);
+        router.push('/')
       }
     } catch (err) {
       console.error(err);

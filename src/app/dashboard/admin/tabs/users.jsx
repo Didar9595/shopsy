@@ -58,7 +58,7 @@ export default function Users() {
                 </div>
                 <button
                   onClick={() => deleteUser(user._id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 cursor-pointer"
                 >
                   Remove
                 </button>
@@ -83,7 +83,7 @@ export default function Users() {
                 </div>
                 <button
                   onClick={() => deleteUser(user._id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 cursor-pointer"
                 >
                   Remove
                 </button>

@@ -20,8 +20,6 @@ export default function CustomerSidebar({ onLinkClick }) {
     { href: "/dashboard/customer?tab=greet", label: "Dashboard", icon: User },
     { href: "/dashboard/customer?tab=profile", label: "My Profile", icon: User },
     { href: "/dashboard/customer?tab=orders", label: "My Orders", icon: ShoppingBag },
-    { href: "/dashboard/customer?tab=cart", label: "Cart", icon: ShoppingCart },
-    { href: "/dashboard/customer?tab=wishlist", label: "Wishlist", icon: Heart },
     { href: "/dashboard/customer?tab=pending", label: "Pending Seller Request", icon: GitPullRequest },
   ];
 

@@ -23,13 +23,13 @@ export async function POST(req) {
       const cart = await Cart.findOne({ user: decoded.id }).populate("items.product");
       if (!cart || !cart.items.length)
         return Response.json({ message: "Cart empty" }, { status: 400 });
-      items = cart.items.map((it) => ({
+        items = cart.items.map((it) => ({
         product: it.product._id,
         variantSku: it.variantSku,
-        variantAttributes: it.variantAttributes,
+        variantAttributes: it.variantAttributes?.[0],
         quantity: it.quantity,
         priceAtAdd: it.priceAtAdd,
-        image:it.product.images[0],
+        image:it.variantImages?.[0],
       }));
 
 

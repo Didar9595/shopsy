@@ -20,7 +20,6 @@ export default function SellerSidebar({ onLinkClick }) {
     { href: "/dashboard/seller?tab=profile", label: "My Profile", icon: User },
     { href: "/dashboard/seller?tab=shop", label: "My Shop", icon: Store },
     { href: "/dashboard/seller?tab=products", label: "Products", icon: Package },
-    { href: "/dashboard/seller?tab=orders", label: "Orders", icon: ShoppingBag },
   ];
 
   return (

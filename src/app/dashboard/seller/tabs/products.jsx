@@ -38,7 +38,7 @@ export default function Products() {
         <h2 className="text-2xl font-bold">My Products</h2>
         <button
           onClick={() => setAdding(true)}
-          className="bg-green-600 text-white px-3 py-1 rounded"
+          className="bg-green-600 text-white px-3 py-1 rounded cursor-pointer"
         >
           + Add Product
         </button>
@@ -92,13 +92,13 @@ export default function Products() {
               >
                 <button
                   onClick={() => setEditing(p)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded-lg shadow"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded-lg shadow cursor-pointer"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(p._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded-lg shadow"
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded-lg shadow cursor-pointer"
                 >
                   Delete
                 </button>

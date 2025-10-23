@@ -44,7 +44,7 @@ export default function LoginPage() {
          });
          const userData = await userRes.json();
 
-         if (userData.role === "customer") router.push("/dashboard/customer");
+         if (userData.role === "customer") router.push("/");
          else if (userData.role === "seller") router.push("/dashboard/seller");
          else if (userData.role === "admin") router.push("/dashboard/admin");
       }
@@ -57,7 +57,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-[fit-content] p-4 flex items-center justify-center bg-gray-100">
+    <div className="h-[85vh] p-4 flex items-center justify-center bg-gray-100">
       <div className="bg-white p-4 sm:p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center text-green-600">Login</h2>
 

@@ -74,13 +74,13 @@ export default function SellerRequests() {
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={() => handleStatusChange(req._id, "accepted")}
-                  className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                  className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded cursor-pointer"
                 >
                   Accept
                 </button>
                 <button
                   onClick={() => handleStatusChange(req._id, "rejected")}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
                 >
                   Reject
                 </button>

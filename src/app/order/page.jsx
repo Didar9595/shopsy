@@ -22,7 +22,7 @@ export default function OrdersPage() {
       <h1 className="text-2xl font-bold mb-4">My Orders</h1>
 
       {orders.length === 0 ? (
-        <p className="text-gray-500">No orders yet.</p>
+        <p className="text-gray-500 min-h-[70vh]">No orders yet.</p>
       ) : (
         orders.map((o) => (
           <div
@@ -43,16 +43,17 @@ export default function OrdersPage() {
 
             <div className="mb-2">
               {o.items.map((it, idx) => (
-                <div className="flex flex-row justify-between">
+                <div className="flex flex-col-reverse sm:flex-row items-center gap-2 border-b p-1">
                   
-                  <div key={idx} className="flex flex-col gap-1  text-sm mb-1">
+                  <div key={idx} className="w-[100%] flex flex-col gap-2  text-sm mb-1">
                     <h1 className="text-xl font-semibold">Product Details : </h1>
                   <span>Name: {it.product?.title || "Product"}</span>
+                   <span>Variant: {it.variantSku}</span>
                   <span>Qty: {it.quantity}</span>
                   <span>Price: ₹{it.priceAtAdd * it.quantity}</span>
                   
                 </div>
-                <img src={it.image} alt="product-img" className="w-60" />
+                <img src={it.image} alt="product-img" className="w-40" />
                 </div>
               ))}
             </div>

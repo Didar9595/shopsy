@@ -81,7 +81,7 @@ export default function MyShop() {
           
           <button
             onClick={handleDeleteShop}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md flex items-center gap-1"
+            className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md flex items-center gap-1 cursor-pointer"
           >
             <Trash2 size={18} /> Delete Shop
           </button>

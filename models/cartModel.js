@@ -6,8 +6,11 @@ const cartItemSchema = new mongoose.Schema({
     ref: "NewProduct",
     required: true,
   },
+  variantSku: { type: String },
+  variantAttributes: { type: Object },
+  variantImages: [String],
   quantity: { type: Number, required: true, default: 1 },
-  priceAtAdd: { type: Number, required: true }, // store product price at time of adding
+  priceAtAdd: { type: Number, required: true }, // price at time of adding
 });
 
 const cartSchema = new mongoose.Schema(
@@ -23,4 +26,4 @@ const cartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.Cart || mongoose.model("Cart", cartSchema);
+export default mongoose.models.NewCart || mongoose.model("NewCart", cartSchema);

@@ -45,7 +45,7 @@ function CustomerDashboard() {
             {/*
             {tab === "cart" && <CustomerCart />}
             {tab === "wishlist" && <CustomerWishlist />  */}
-            {tab === "pending" && <Pending/>}
+            
           </div>
         </div>
       

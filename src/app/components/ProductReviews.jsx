@@ -78,7 +78,7 @@ export default function ProductReviews({ productId}) {
           />
           <button
             type="submit"
-            className="mt-3 bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded"
+            className="mt-3 bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer"
           >
             Submit Review
           </button>

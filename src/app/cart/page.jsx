@@ -1,83 +1,94 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthProvider";
 
 export default function CartPage() {
+  const router = useRouter();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-const [address, setAddress] = useState({
-    street: "",
-    city: "",
-    state: "",
-    zip: "",
-    country: "",
-  });  const [editingAddress, setEditingAddress] = useState(false);
-  const {user}=useAuth()
+  const [address, setAddress] = useState({ street: "", city: "", state: "", zip: "", country: "", });
+  const [editingAddress, setEditingAddress] = useState(false);
+  const { user } = useAuth()
 
+  // 🔹 Fetch cart
   const fetchCart = async () => {
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        router.push("/login");
+        return;
+      }
       const res = await fetch("/api/cart", {
-        headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
       });
       const data = await res.json();
-      setCart(data.cart);
-    } catch (err) {
-      console.error(err);
+      if (res.ok) {
+        setCart(data.cart);
+      }
+    } catch (error) {
+      console.error("Error fetching cart:", error);
     } finally {
       setLoading(false);
     }
   };
-    const fetchUser = async () => {
-    setAddress(user?.address);
+
+  const fetchUser = async () => {
+    setAddress(user?.address)
   };
 
-  const updateQuantity = async (productId, quantity) => {
-    const res = await fetch("/api/cart", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ productId, quantity }),
-    });
-    if (res.ok) {
-      fetchCart();
-      window.dispatchEvent(new Event("cartUpdated")); // 🔔 refresh navbar
-
+  // 🔹 Quantity update
+  const updateQuantity = async (productId, variantSku, quantity) => {
+    if (quantity < 1) return;
+    try {
+      const res = await fetch("/api/cart", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ productId, variantSku, quantity }),
+      });
+      if (res.ok) {
+        fetchCart();
+        window.dispatchEvent(new Event("cartUpdated"));
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
     }
   };
 
-  const removeItem = async (productId) => {
-    const res = await fetch(`/api/cart?productId=${productId}`, {
-      method: "DELETE",
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    if (res.ok) {
-      fetchCart();
-      window.dispatchEvent(new Event("cartUpdated")); // 🔔 refresh navbar
+  // 🔹 Remove item
+  const removeItem = async (productId, variantSku) => {
+    try {
+      const res = await fetch(
+        `/api/cart?productId=${productId}&variantSku=${variantSku}`,
+        {
+          method: "DELETE",
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (res.ok) {
+        fetchCart();
+        window.dispatchEvent(new Event("cartUpdated"));
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
     }
   };
 
+  // 🔹 Checkout (placeholder for now)
+  // 💳 Handle Checkout
   const handleCheckout = async () => {
-    if (!address || !address.street) {
-      return alert("Please add your delivery address first!");
+    if (!address?.street || !address?.city) {
+      alert("Please add your delivery address first!");
+      return;
     }
-
-    const orderBody = {
-      items: cart.items.map((it) => ({
-        product: it.product._id,
-        variantSku: it.variant?.sku || "",
-        variantAttributes: it.variant?.attributes || {},
-        quantity: it.quantity,
-        priceAtAdd: it.priceAtAdd,
-        image: it.variant?.images?.[0] || it.product.images?.[0] || "", //  fallback
-      })),
-      totalAmount: subtotal,
-      shippingAddress: address,
-      fromCart:true,
-    };
 
     try {
       const res = await fetch("/api/orders", {
@@ -86,73 +97,130 @@ const [address, setAddress] = useState({
           "Content-Type": "application/json",
           authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(orderBody),
+        body: JSON.stringify({
+          fromCart: true, //  Important flag
+          items: cart.items.map((it) => ({
+            product: it.product._id,
+            variantSku: it.variant?.sku || "",
+            variantAttributes: it.variant?.attributes || {},
+            quantity: it.quantity,
+            priceAtAdd: it.priceAtAdd,
+            image: it.variant?.images?.[0] || it.product.images?.[0] || "", //  fallback
+          })),
+          totalAmount: totalAmount,
+          shippingAddress: address,
+        }),
       });
+      
 
       if (res.ok) {
         alert("✅ Order placed successfully!");
-        window.dispatchEvent(new Event("cartUpdated")); // 🔔 refresh navbar
+        window.dispatchEvent(new Event("cartUpdated"));
         router.push("/order");
       } else {
-        const data = await res.json();
-        alert(data.message || "Failed to place order");
+        const err = await res.json();
+        alert(err.message || "Failed to place order");
       }
     } catch (error) {
-      console.error("Order placement error:", error);
-      alert("Error placing order.");
+      console.error("Checkout failed:", error);
+      alert("Error placing order!");
     }
   };
-
 
   useEffect(() => {
     fetchCart();
     fetchUser();
+    // Listen to global event for counter update
+    // const handler = () => fetchCart();
+    // window.addEventListener("cartUpdated", handler);
+    // return () => window.removeEventListener("cartUpdated", handler);
   }, []);
 
-  if (loading) return <p className="p-6 h-[90vh] text-center text-xl">Loading cart...</p>;
-  if (!cart || !cart.items?.length)
-    return <p className="p-6 h-[90vh] text-center text-xl">Your cart is empty.</p>;
+  if (loading)
+    return <p className="text-center mt-10 text-gray-600 min-h-[70vh]">Loading cart...</p>;
 
-  const subtotal = cart.items.reduce(
-    (sum, it) => sum + (it.priceAtAdd || 0) * it.quantity,
+  if (!cart || !cart.items?.length)
+    return (
+      <div className="flex flex-col items-center justify-center mt-20 text-gray-600 min-h-[70vh]">
+        <p className="text-lg mb-4">Your cart is empty 🛍️</p>
+        <button
+          onClick={() => router.push("/")}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+        >
+          Continue Shopping
+        </button>
+      </div>
+    );
+
+  const totalAmount = cart.items.reduce(
+    (sum, it) => sum + it.priceAtAdd * it.quantity,
     0
   );
 
   return (
-    <div className="p-6 max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 space-y-4">
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6 text-white bg-green-600 p-2">My Cart</h1>
+
+      <div className="space-y-4">
         {cart.items.map((it) => (
           <div
-            key={it._id}
-            className="flex gap-4 p-4 border rounded bg-white shadow-sm"
+            key={`${it.product._id}-${it.variantSku || "default"}`}
+            className="flex gap-4 p-4 border rounded-lg bg-white shadow-sm"
           >
             <img
-              src={it.product?.images?.[0] || "/no-image.png"}
+              src={
+                it.variantImages?.[0] ||
+                it.product?.images?.[0] ||
+                "/no-image.png"
+              }
               alt={it.product?.title}
-              className="w-28 h-28 object-cover rounded"
+              className="w-28 object-cover rounded"
             />
+
             <div className="flex-1">
               <h3 className="font-semibold">{it.product?.title}</h3>
-              <p className="text-sm text-gray-600">
-                ₹{it.priceAtAdd} × {it.quantity}
+
+              {/* Variant Info */}
+              {it.variantAttributes &&
+                Object.keys(it.variantAttributes).length > 0 && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    {Object.entries(it.variantAttributes)
+                      .map(([key, val]) => `${key}: ${val}`)
+                      .join(", ")}
+                  </p>
+                )}
+
+              <p className="text-gray-700 mt-1">
+                ₹{it.priceAtAdd} × {it.quantity} ={" "}
+                <span className="font-semibold">
+                  ₹{it.priceAtAdd * it.quantity}
+                </span>
               </p>
-              <div className="flex items-center flex-wrap gap-2 mt-2">
-                <button
-                  onClick={() => updateQuantity(it.product._id, it.quantity - 1)}
-                  className="px-2 py-1 bg-gray-200 rounded"
+
+              <div className="flex flex-col sm:flex-row items-center gap-2 mt-3">
+                <div>
+                  <button
+                  onClick={() =>
+                    updateQuantity(it.product._id, it.variantSku, it.quantity - 1)
+                  }
+                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
                 >
                   -
                 </button>
-                <span>{it.quantity}</span>
+                <span className="px-2">{it.quantity}</span>
                 <button
-                  onClick={() => updateQuantity(it.product._id, it.quantity + 1)}
-                  className="px-2 py-1 bg-gray-200 rounded"
+                  onClick={() =>
+                    updateQuantity(it.product._id, it.variantSku, it.quantity + 1)
+                  }
+                  className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
                 >
                   +
                 </button>
+                </div>
+
                 <button
-                  onClick={() => removeItem(it.product._id)}
-                  className="ml-4 text-red-600"
+                  onClick={() => removeItem(it.product._id, it.variantSku)}
+                  className="ml-4 text-red-600 hover:text-red-800 cursor-pointer"
                 >
                   Remove
                 </button>
@@ -162,20 +230,19 @@ const [address, setAddress] = useState({
         ))}
       </div>
 
-      <aside className="bg-white p-4 rounded shadow">
-        <h3 className="font-semibold text-lg">Order Summary</h3>
-        <div className="mt-4">
-          <div className="flex justify-between">
-            <span>Subtotal</span>
-            <span>₹{subtotal}</span>
-          </div>
-          <div className="flex justify-between font-bold mt-3">
-            <span>Total</span>
-            <span>₹{subtotal}</span>
-          </div>
+      {/* Summary */}
+      <div className="mt-8 border-t pt-6 flex flex-col justify-between items-center">
+        <div className="w-[100%] flex flex-col justify-center items-center sm:flex-row-reverse sm:items-between sm:justify-between">
+          <div className="border-dashed border-2 border-green-600 p-2 rounded-sm">
+          <p className="text-lg font-semibold">
+            Total Amount: ₹{totalAmount.toLocaleString()}
+          </p>
+          <p className="text-sm text-gray-500">
+            ({cart.items.length} item{cart.items.length > 1 ? "s" : ""})
+          </p>
         </div>
 
-        {/* Address Section */}
+        {/* 📍 Address Section */}
         <div className="mt-6">
           <h4 className="font-semibold">Delivery Address</h4>
           {editingAddress ? (
@@ -194,40 +261,36 @@ const [address, setAddress] = useState({
               ))}
               <button
                 onClick={() => setEditingAddress(false)}
-                className="text-blue-600 mt-1"
+                className="text-green-600 mt-1 hover:underline cursor-pointer"
               >
                 Save Address
               </button>
             </div>
           ) : (
             <div className="text-gray-700 mt-1 space-y-1">
-              <p>{address.street}</p>
+              <p>{address?.street}</p>
               <p>
-                {address.city}, {address.state} - {address.zip}
+                {address?.city}, {address?.state} - {address?.zip}
               </p>
-              <p>{address.country}</p>
+              <p>{address?.country}</p>
               <button
                 onClick={() => setEditingAddress(true)}
-                className="text-blue-600 mt-2"
+                className="text-green-600 mt-2 hover:underline cursor-pointer"
               >
                 Change Address
               </button>
             </div>
           )}
         </div>
+        </div>
+
         <button
           onClick={handleCheckout}
-          className="mt-6 w-full bg-green-600 text-white py-2 rounded cursor-pointer"
-        >
-          Checkout
-        </button>
-        {/* <button
-          onClick={handleCheckout}
-          className="mt-4 w-full bg-green-600 text-white py-2 rounded"
+          className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition mt-4 cursor-pointer"
         >
           Proceed to Checkout
-        </button> */}
-      </aside>
+        </button>
+      </div>
     </div>
   );
 }

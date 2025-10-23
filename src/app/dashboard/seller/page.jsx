@@ -45,7 +45,7 @@ import SellerProducts from "./tabs/products";
              {tab==='profile' && <ProfilePage/>}
              {tab==='shop' && <MyShop/>}
              {tab==='products' && <SellerProducts/>}
-             {tab==='dash' && <DashboardComp/>}
+             
            
           </div>
         </div>
