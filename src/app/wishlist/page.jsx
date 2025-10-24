@@ -2,10 +2,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../../context/AuthProvider";
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState(null);
   const router = useRouter();
+  const {isLogin}=useAuth()
 
   const fetchWishlist = async () => {
     const res = await fetch("/api/wishlist", { 
@@ -18,7 +20,9 @@ export default function WishlistPage() {
     }
   };
 
-  useEffect(() => { fetchWishlist(); }, []);
+  useEffect(() => { 
+    if(!isLogin) router.push('/login')
+    fetchWishlist(); }, []);
 
   const remove = async (productId) => {
     const res = await fetch("/api/wishlist", {

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Users, User, Store, Package, ShoppingBag,X ,Menu} from "lucide-react";
+import { Users, User, Store, Package, ShoppingBag,X ,Menu, ShoppingBagIcon} from "lucide-react";
 
 export default function SellerSidebar({ onLinkClick }) {
   const searchParams = useSearchParams();
@@ -20,6 +20,7 @@ export default function SellerSidebar({ onLinkClick }) {
     { href: "/dashboard/seller?tab=profile", label: "My Profile", icon: User },
     { href: "/dashboard/seller?tab=shop", label: "My Shop", icon: Store },
     { href: "/dashboard/seller?tab=products", label: "Products", icon: Package },
+    { href: "/dashboard/seller?tab=order-tracking", label: "Orders Tracking", icon: ShoppingBagIcon }
   ];
 
   return (

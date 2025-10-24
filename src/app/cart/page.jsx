@@ -10,7 +10,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState({ street: "", city: "", state: "", zip: "", country: "", });
   const [editingAddress, setEditingAddress] = useState(false);
-  const { user } = useAuth()
+  const { user,isLogin } = useAuth()
 
   // 🔹 Fetch cart
   const fetchCart = async () => {
@@ -82,7 +82,7 @@ export default function CartPage() {
     }
   };
 
-  // 🔹 Checkout (placeholder for now)
+  
   // 💳 Handle Checkout
   const handleCheckout = async () => {
     if (!address?.street || !address?.city) {
@@ -128,6 +128,7 @@ export default function CartPage() {
   };
 
   useEffect(() => {
+    if(!isLogin) router.push('/login')
     fetchCart();
     fetchUser();
     // Listen to global event for counter update

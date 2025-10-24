@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import SellerSidebar from "@/app/components/Seller/SellerSidebar";
 import MyShop from "./tabs/myShop";
 import SellerProducts from "./tabs/products";
+import SellerOrdersPage from "./tabs/orders";
 
 
  function AdminDashboard() {
@@ -45,6 +46,7 @@ import SellerProducts from "./tabs/products";
              {tab==='profile' && <ProfilePage/>}
              {tab==='shop' && <MyShop/>}
              {tab==='products' && <SellerProducts/>}
+             {tab==='order-tracking' && <SellerOrdersPage/>}
              
            
           </div>

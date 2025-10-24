@@ -98,11 +98,18 @@ export async function PATCH(req) {
     const decoded = verifyToken(token);
     if (!decoded) return Response.json({ message: "Unauthorized" }, { status: 401 });
 
-    const { orderId, paymentStatus, orderStatus } = await req.json();
+    const { orderId, orderStatus } = await req.json();
+
+    const orders = await Order.findById(orderId).populate("items.product", "seller");
+     if (["cancelled", "delivered"].includes(orders.orderStatus))
+      return Response.json({ message: "Cannot change the staus of cancelled or delivered order" }, { status: 400 });
 
     const update = {};
-    if (paymentStatus) update.paymentStatus = paymentStatus;
+    //if (paymentStatus) update.paymentStatus = paymentStatus;
     if (orderStatus) update.orderStatus = orderStatus;
+
+    
+
 
     const order = await Order.findByIdAndUpdate(orderId, update, { new: true });
     if (!order) return Response.json({ message: "Order not found" }, { status: 404 });

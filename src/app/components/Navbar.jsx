@@ -70,10 +70,10 @@ function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden sm:flex items-center gap-4 lg:gap-8 text-slate-600">
             <Link href="/">Home</Link>
-            <Link href="/wishlist">Wishlist</Link>
-            <Link href="/order">Orders</Link>
             <Link href="/">About</Link>
-            <Link href={dashboardLink}>Dashboard</Link>
+            {isLogin && <Link href="/wishlist">Wishlist</Link>}
+            {isLogin && <Link href="/order">Orders</Link>}
+            {isLogin && <Link href={dashboardLink}>Dashboard</Link>}
 
             <form className="hidden xl:flex items-center w-xs text-sm gap-2 bg-slate-100 px-4 py-3 rounded-full">
               <Search size={18} className="text-slate-600" />
@@ -137,20 +137,39 @@ function Navbar() {
             >
               <House /> Home
             </Link>
-            <Link
-              href="/wishlist"
-              onClick={() => setOpen(false)}
-              className="hover:text-green-600 flex items-center gap-2"
-            >
-              <Heart /> Wishlist
-            </Link>
-            <Link
+            
+            {isLogin && 
+             <Link
               href="/"
               onClick={() => setOpen(false)}
               className="hover:text-green-600 flex items-center gap-2"
             >
               <CircleAlert /> About
             </Link>
+            }
+
+            {
+              isLogin &&
+              <Link
+              href="/wishlist"
+              onClick={() => setOpen(false)}
+              className="hover:text-green-600 flex items-center gap-2"
+            >
+              <Heart /> Wishlist
+            </Link>
+            }
+
+            {
+              isLogin &&
+              <Link
+              href="/order"
+              onClick={() => setOpen(false)}
+              className="hover:text-green-600 flex items-center gap-2"
+            >
+              <ShoppingCart /> Order
+            </Link>
+            }
+
             <Link
               href={dashboardLink}
               onClick={() => setOpen(false)}

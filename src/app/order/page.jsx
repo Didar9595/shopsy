@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
+  const router=useRouter()
+  const {isLogin}=useAuth()
 
   useEffect(() => {
+    if(!isLogin) router.push('/login')
     const fetchOrders = async () => {
       const token = localStorage.getItem("token");
       const res = await fetch("/api/orders", {
@@ -17,9 +22,43 @@ export default function OrdersPage() {
     fetchOrders();
   }, []);
 
+  const handleCancelItem = async (orderId) => {
+    const confirmCancel = confirm("Are you sure you want to cancel this order?");
+    if (!confirmCancel) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("/api/orders/cancel", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Order cancelled successfully!");
+        // Update UI immediately
+        setOrders((prev) =>
+          prev.map((o) =>
+            o._id === orderId ? { ...o, orderStatus: "cancelled" } : o
+          )
+        );
+      } else {
+        alert(data.message || "Failed to cancel order");
+      }
+    } catch (error) {
+      console.error("Cancel order error:", error);
+      alert("Something went wrong while cancelling order");
+    }
+  };
+
+
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">My Orders</h1>
+      <h1 className="text-2xl font-bold mb-4 p-3 bg-green-600 text-white">My Orders History</h1>
 
       {orders.length === 0 ? (
         <p className="text-gray-500 min-h-[70vh]">No orders yet.</p>
@@ -67,6 +106,15 @@ export default function OrdersPage() {
             <div className="flex justify-end mt-3 font-semibold">
               Total: ₹{o.totalAmount}
             </div>
+            {o.orderStatus !== "cancelled" &&
+                o.orderStatus !== "delivered" && (
+                  <button
+                    onClick={() => handleCancelItem(o._id)}
+                    className="py-1 px-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                  >
+                    Cancel Order
+                  </button>
+                )}
           </div>
         ))
       )}
