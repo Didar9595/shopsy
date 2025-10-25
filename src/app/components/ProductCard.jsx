@@ -9,12 +9,12 @@ export default function ProductCard({ product }) {
     : 0;
 
   return (
-    <Link href={`/products/${product._id}`} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-3 flex flex-col">
+    <Link href={`/products/${product._id}`} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-2 flex flex-col">
       <div className="relative flex justify-center items-center">
         <img
           src={product.images?.[0] || firstVariant.images?.[0] || "/placeholder.jpg"}
           alt={product.title}
-          className="h-40 w-auto object-contain"
+          className="h-30 md:h-45 w-auto object-contain"
         />
         {discount > 0 && (
           <span className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">

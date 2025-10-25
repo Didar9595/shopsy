@@ -1,5 +1,5 @@
 "use client";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PackageIcon, Search, ShoppingCart, Menu, X, LogOut, Handbag, LayoutDashboard, CircleAlert, House, Heart } from "lucide-react";
 import { useAuth } from "../../../context/AuthProvider";
@@ -11,6 +11,8 @@ function Navbar() {
   const [open, setOpen] = useState(false);
 
   const [cartCount, setCartCount] = useState(0);
+
+  const [search,setSearch]=useState("")
 
   //fetch cart count
   const fetchCartCount = async () => {
@@ -75,13 +77,26 @@ function Navbar() {
             {isLogin && <Link href="/order">Orders</Link>}
             {isLogin && <Link href={dashboardLink}>Dashboard</Link>}
 
-            <form className="hidden xl:flex items-center w-xs text-sm gap-2 bg-slate-100 px-4 py-3 rounded-full">
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const query = e.target.search.value.trim();
+
+                if (query) router.push(`/search?query=${encodeURIComponent(query)}`);
+                setSearch("")
+              }}
+              className="hidden md:flex items-center w-xs text-sm gap-2 bg-slate-100 px-4 py-3 rounded-full"
+            >
               <Search size={18} className="text-slate-600" />
               <input
+                name="search"
                 className="w-full bg-transparent outline-none placeholder-slate-600"
                 type="text"
                 placeholder="Search products"
                 required
+                value={search}
+                onChange={e=>setSearch(e.target.value)}
               />
             </form>
 
@@ -109,12 +124,16 @@ function Navbar() {
             )}
           </div>
 
+           <Search size={28} className="text-slate-700 md:hidden"  onClick={()=>router.push('/search')}/>
           {/* Mobile Menu Button */}
           <div className="sm:hidden">
+           
             <button onClick={() => setOpen(true)}>
               <Menu size={28} className="text-slate-700" />
             </button>
+             
           </div>
+         
         </div>
       </div>
       <hr className="border-gray-300" />
@@ -137,37 +156,37 @@ function Navbar() {
             >
               <House /> Home
             </Link>
-            
-            {isLogin && 
-             <Link
-              href="/"
-              onClick={() => setOpen(false)}
-              className="hover:text-green-600 flex items-center gap-2"
-            >
-              <CircleAlert /> About
-            </Link>
+
+            {isLogin &&
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                className="hover:text-green-600 flex items-center gap-2"
+              >
+                <CircleAlert /> About
+              </Link>
             }
 
             {
               isLogin &&
               <Link
-              href="/wishlist"
-              onClick={() => setOpen(false)}
-              className="hover:text-green-600 flex items-center gap-2"
-            >
-              <Heart /> Wishlist
-            </Link>
+                href="/wishlist"
+                onClick={() => setOpen(false)}
+                className="hover:text-green-600 flex items-center gap-2"
+              >
+                <Heart /> Wishlist
+              </Link>
             }
 
             {
               isLogin &&
               <Link
-              href="/order"
-              onClick={() => setOpen(false)}
-              className="hover:text-green-600 flex items-center gap-2"
-            >
-              <ShoppingCart /> Order
-            </Link>
+                href="/order"
+                onClick={() => setOpen(false)}
+                className="hover:text-green-600 flex items-center gap-2"
+              >
+                <ShoppingCart /> Order
+              </Link>
             }
 
             <Link
