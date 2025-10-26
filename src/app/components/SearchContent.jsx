@@ -102,7 +102,7 @@ export default function SearchContent() {
                         <Search size={18} className="text-slate-600" />
                         <input
                             name="search"
-                            className="w-[fit-content] bg-transparent outline-none placeholder-slate-600"
+                            className="w-[80%] bg-transparent outline-none placeholder-slate-600"
                             type="text"
                             placeholder="Search products"
                             required

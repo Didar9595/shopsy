@@ -40,7 +40,7 @@ export default function AboutPage() {
           className="flex-1"
         >
           <h2 className="text-3xl font-semibold text-green-700 mb-4">Our Mission</h2>
-          <p className="text-gray-700">
+          <p className="text-gray-700 text-justify">
             To provide a seamless shopping experience where quality meets convenience. At Shopsy, we prioritize our customers by offering reliable products, fast delivery, and exceptional support.
           </p>
         </motion.div>
@@ -50,7 +50,7 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           src="mission.svg"
           alt="Our Mission"
-          className="w-60 rounded-lg bg-green-50"
+          className="w-40 lg:w-60 rounded-lg bg-green-50"
         />
       </section>
 
@@ -62,7 +62,7 @@ export default function AboutPage() {
             <motion.div 
               key={idx}
               whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center w-[25%]"
+              className="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center w-[fit-content]"
             >
               {/* <img src={member.img} alt={member.name} className="w-32 h-32 rounded-full object-cover mb-3" /> */}
               <UserRound size={80} />

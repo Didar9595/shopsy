@@ -157,7 +157,7 @@ function Navbar() {
               <House /> Home
             </Link>
 
-            {isLogin &&
+          
               <Link
                 href="/about"
                 onClick={() => setOpen(false)}
@@ -165,7 +165,7 @@ function Navbar() {
               >
                 <CircleAlert /> About
               </Link>
-            }
+            
 
             {
               isLogin &&

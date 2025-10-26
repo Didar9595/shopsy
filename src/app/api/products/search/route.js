@@ -1,5 +1,6 @@
 import { dbConnect } from "../../../../../lib/dbConnect";
 import Product from "../../../../../models/productModel";
+import Shop from "../../../../../models/shopModel";
 
 export async function GET(req) {
   await dbConnect();
