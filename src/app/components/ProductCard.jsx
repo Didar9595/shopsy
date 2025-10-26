@@ -8,6 +8,7 @@ export default function ProductCard({ product }) {
     ? Math.round(((firstVariant.mrp - firstVariant.price) / firstVariant.mrp) * 100)
     : 0;
 
+   
   return (
     <Link href={`/products/${product._id}`} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-2 flex flex-col">
       <div className="relative flex justify-center items-center">
@@ -25,6 +26,10 @@ export default function ProductCard({ product }) {
       <div className="mt-3 flex flex-col gap-1">
         <h3 className="text-sm font-semibold line-clamp-2">{product.title}</h3>
         <p className="text-gray-600 text-xs line-clamp-1">{product.category}</p>
+        <div className="flex flex-row gap-1 items-center">
+          <img src={product.shop.shopLogo} alt="logo" className="w-8 rounded-full shadow-sm" />
+          <p className="text-gray-600 text-xs line-clamp-1">{product.shop.shopName}</p>
+        </div>
         <div className="flex items-center gap-2 mt-1">
           <span className="text-lg font-bold text-green-600">₹{firstVariant.price}</span>
           {firstVariant.mrp && (

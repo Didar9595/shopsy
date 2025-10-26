@@ -193,11 +193,11 @@ export default function SearchContent() {
             </aside>
 
             {/* Mobile Header */}
-            <div className="md:hidden flex justify-between items-center mb-3 absolute right-4">
+            <div className="md:hidden flex justify-end items-center w-[100%] p-2">
 
                 <button
                     onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-                    className="p-4 rounded-full shadow-md cursor-pointer "
+                    className="p-4 rounded-full shadow-md cursor-pointer"
                 >
                     <Funnel size={20} className="text-green-500" />
                 </button>
@@ -206,7 +206,7 @@ export default function SearchContent() {
 
             {/* Mobile Filter Drawer */}
             {mobileFilterOpen && (
-                <div className="md:hidden relative bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div className="md:hidden bg-white rounded-lg shadow-sm p-4 mb-4">
                     <div className="flex flex-col gap-3">
                         <form
                             onSubmit={handleSearchSubmit}
@@ -307,12 +307,12 @@ export default function SearchContent() {
             )}
 
             {/* Product Grid */}
-            <main className="flex-1 p-4">
-                {/* {
+            <main className="flex-1 px-4 py-1">
+                {
                     query && <h2 className=" text-2xl font-semibold mb-4">
                     Results for “{query}”
                 </h2>
-                } */}
+                }
 
                 {loading ? (
                     <p>Loading...</p>

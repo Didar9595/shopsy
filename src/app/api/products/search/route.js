@@ -47,7 +47,7 @@ export async function GET(req) {
   }
 
   try {
-    const products = await Product.find(filter).sort(sortOption);
+    const products = await Product.find(filter).populate("shop","shopName shopLogo").sort(sortOption);
     return new Response(JSON.stringify({ success: true, products }), { status: 200 });
   } catch (err) {
     return new Response(JSON.stringify({ success: false, message: err.message }), { status: 500 });

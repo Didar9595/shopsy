@@ -7,6 +7,7 @@ import ProductReviews from "@/app/components/ProductReviews";
 import { useAuth } from "../../../../context/AuthProvider";
 import { Spinner } from "flowbite-react";
 import { useRouter } from "next/navigation";
+import ProductCard from "@/app/components/ProductCard";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -19,7 +20,9 @@ export default function ProductDetailPage() {
   const [inWishlist, setInWishlist] = useState(false)
   const [isSellerOfThisProduct, setIsSellerOfThisProduct] = useState(false);
 
-  const router=useRouter()
+  const [relatedProducts, setRelatedProducts] = useState([]);
+
+  const router = useRouter()
 
 
 
@@ -54,11 +57,23 @@ export default function ProductDetailPage() {
           }
         }
 
+        // ✅ Fetch related products
+        if (data.product?.category) {
+          const relRes = await fetch(
+            `/api/products/related?category=${data.product?.category}&subcategory=${data.product?.subcategory}&exclude=${data.product._id}`
+          );
+          const relData = await relRes.json();
+          if (relData.success) setRelatedProducts(relData.products);
+        }
+
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
         setLoading(false);
       }
+
+
+
     };
     if (id) fetchProduct();
   }, [id]);
@@ -99,34 +114,34 @@ export default function ProductDetailPage() {
 
   //add to cart
   const handleAddToCart = async () => {
-  try {
-    const res = await fetch("/api/cart", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        productId: product._id,
-        quantity: 1,
-        variantSku: selectedVariant?.sku || "",
-        variantAttributes: selectedVariant?.attributes || {},
-        variantImages: selectedVariant?.images || [],
-        priceAtAdd: selectedVariant?.price || product.price,
-      }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      alert("Added to cart!");
-      window.dispatchEvent(new Event("cartUpdated")); // refresh navbar
+    try {
+      const res = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          productId: product._id,
+          quantity: 1,
+          variantSku: selectedVariant?.sku || "",
+          variantAttributes: selectedVariant?.attributes || {},
+          variantImages: selectedVariant?.images || [],
+          priceAtAdd: selectedVariant?.price || product.price,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("Added to cart!");
+        window.dispatchEvent(new Event("cartUpdated")); // refresh navbar
+      }
+      else alert(data.message);
+    } catch (error) {
+      console.error(error);
     }
-    else alert(data.message);
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
-// Buy Now → Create a direct order then redirect
+  // Buy Now → Create a direct order then redirect
   const handleBuyNow = () => {
     if (!user) return router.push("/login");
 
@@ -136,7 +151,7 @@ export default function ProductDetailPage() {
       price: selectedVariant?.price || product.price || 0,
       quantity: "1",
       fromCart: "false",
-      image:selectedVariant?.images[0],
+      image: selectedVariant?.images[0],
     }).toString();
 
     router.push(`/checkout?${params}`);
@@ -155,7 +170,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="max-h-[fit-content] bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row gap-8">
 
         {/* LEFT: Product Images */}
@@ -262,6 +277,13 @@ export default function ProductDetailPage() {
                       : "Out of Stock"}
                   </span>
                 </p>
+                <div className="border-2 border-dashed border-green-500 w-[fit-content] px-6 py-1 rounded-md">
+                  <h1 className="font-bold text-lg ">Offered by:-</h1>
+                  <div className="flex flex-row gap-1 items-center">
+                    <img src={product.shop.shopLogo} alt="logo" className="w-12 rounded-full shadow-sm" />
+                    <p className="font-normal">{product.shop.shopName}</p>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -287,17 +309,16 @@ export default function ProductDetailPage() {
             <button
               onClick={handleBuyNow}
               disabled={isSellerOfThisProduct}
-              className={`cursor-pointer flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold shadow ${
-                isSellerOfThisProduct ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`cursor-pointer flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold shadow ${isSellerOfThisProduct ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               Buy Now
             </button>
 
             {/* Add to Cart Button */}
             <button disabled={isSellerOfThisProduct} onClick={handleAddToCart} className={`bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded flex flex-row justify-center items-center ${isSellerOfThisProduct
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-gray-100 cursor-pointer"
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-gray-100 cursor-pointer"
               }`}><ShoppingCart /> Add to Cart</button>
 
             {/* Wishlist Button */}
@@ -305,8 +326,8 @@ export default function ProductDetailPage() {
               onClick={handleAddToWishlist}
               disabled={isSellerOfThisProduct}
               className={`p-2 rounded-full border flex items-center justify-center transition-all ${isSellerOfThisProduct
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-100 cursor-pointer"
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-100 cursor-pointer"
                 }`}
               title={
                 isSellerOfThisProduct
@@ -325,24 +346,22 @@ export default function ProductDetailPage() {
         <ProductReviews productId={product._id} />
       </div>
 
-      {/* Related Products */}
-      <div className="max-w-6xl mx-auto mt-10">
-        <h2 className="text-2xl font-semibold mb-4">Similar Products</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="bg-white p-3 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
-            >
-              <img
-                src={product.images?.[0]}
-                alt="related"
-                className="w-full h-40 object-contain rounded"
-              />
-              <p className="font-semibold mt-2 text-sm truncate">{product.title}</p>
-              <p className="text-green-600 font-bold">₹{selectedVariant?.price}</p>
+
+      <div className="min-h-screen bg-gray-100 p-6">
+
+        {/* Product section (same as yours) */}
+        <div className="max-w-6xl mt-10">
+          <h2 className="text-2xl font-semibold mb-4">Similar Products</h2>
+
+          {relatedProducts.length === 0 ? (
+            <p className="text-gray-500">No related products found.</p>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((item) => (
+                <ProductCard product={item} />
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

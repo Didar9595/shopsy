@@ -6,10 +6,10 @@ export async function GET() {
 
   try {
     // Latest products
-    const latest = await Product.find().sort({ createdAt: -1 }).limit(10).lean();
+    const latest = await Product.find().populate("shop", "shopName shopLogo") .sort({ createdAt: -1 }).limit(10).lean();
 
     // Best deals = highest discount percentage
-    const allProducts = await Product.find().lean();
+    const allProducts = await Product.find() .populate("shop", "shopName shopLogo") .lean();
     const bestDeals = allProducts
       .map(p => ({
         ...p,
@@ -22,7 +22,7 @@ export async function GET() {
     const categories = ["Electronics", "Clothes","Sports","Beauty","Books","Home & Kitchen"];
     const categoryWise = {};
     for (const cat of categories) {
-      categoryWise[cat] = await Product.find({ category: cat }).limit(8).lean();
+      categoryWise[cat] = await Product.find({ category: cat }).populate("shop", "shopName shopLogo") .limit(8).lean();
     }
 
     return new Response(

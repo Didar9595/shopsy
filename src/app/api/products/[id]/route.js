@@ -58,7 +58,7 @@ export async function GET(req, { params }) {
 
     const product = await Product.findById(id)
       .populate("seller", "name email")
-      .populate("shop", "shopName");
+      .populate("shop", "shopName shopLogo");
 
     if (!product) {
       return new Response(
