@@ -356,7 +356,7 @@ export default function ProductDetailPage() {
           {relatedProducts.length === 0 ? (
             <p className="text-gray-500">No related products found.</p>
           ) : (
-            <div className="flex flex-row flex-wrap gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
               {relatedProducts.map((item) => (
                 <ProductCard product={item} />
               ))}
