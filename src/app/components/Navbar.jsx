@@ -72,7 +72,7 @@ function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden sm:flex items-center gap-4 lg:gap-8 text-slate-600">
             <Link href="/">Home</Link>
-            <Link href="/">About</Link>
+            <Link href="/about">About</Link>
             {isLogin && <Link href="/wishlist">Wishlist</Link>}
             {isLogin && <Link href="/order">Orders</Link>}
             {isLogin && <Link href={dashboardLink}>Dashboard</Link>}
@@ -159,7 +159,7 @@ function Navbar() {
 
             {isLogin &&
               <Link
-                href="/"
+                href="/about"
                 onClick={() => setOpen(false)}
                 className="hover:text-green-600 flex items-center gap-2"
               >
