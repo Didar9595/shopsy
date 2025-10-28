@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import AddEditProduct from "@/app/components/AddEditProducts";
 import Link from "next/link";
+import BulkAddProducts from "@/app/components/BulkAddProducts";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [editing, setEditing] = useState(null);
   const [adding, setAdding] = useState(false);
+  const [bulk,setBulk]=useState(false);
 
   const fetchProducts = async () => {
     const token = localStorage.getItem("token");
@@ -42,6 +44,12 @@ export default function Products() {
         >
           + Add Product
         </button>
+        <button
+          onClick={() => setBulk(true)}
+          className="text-green-600 border border-green-600 px-3 py-1 rounded cursor-pointer"
+        >
+          + Bulk Add Products
+        </button>
       </div>
 
       {(adding || editing) && (
@@ -61,9 +69,9 @@ export default function Products() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-6">
         {products.map((p) => (
-          <Link href={`/products/${p._id}`}>
+          <Link href={`/products/${p._id}`} key={p._id}>
             <div
-              key={p._id}
+              
               className="group relative border rounded-xl bg-white p-4 shadow hover:shadow-lg transition-all duration-300 cursor-pointer"
               onClick={() => router.push(`/products/${p._id}`)}
             >
@@ -107,6 +115,19 @@ export default function Products() {
 
           </Link>
         ))}
+
+
+       
+      </div>
+      <div className="p-0">
+         {
+          bulk && (
+            <div className="block">
+              <BulkAddProducts/>
+              <button className="px-5 py-1 bg-red-500 text-white rounded-md cursor-pointer hover:shadow-md transition-all mt-5" onClick={()=>setBulk(false)}>Close</button>
+            </div>
+          )
+        }
       </div>
     </div>
   );
