@@ -2,6 +2,7 @@ import { dbConnect } from "../../../../../lib/dbConnect";
 import { verifyToken } from "../../../../../utils/jwt";
 import Order from "../../../../../models/orderModel";
 import Product from "../../../../../models/productModel";
+import User from "../../../../../models/userModel";
 
 export async function PATCH(req) {
   await dbConnect();
@@ -17,9 +18,13 @@ export async function PATCH(req) {
 
     const userId = decoded.id;
     const isSeller = order.items.some((it) => it.product?.seller?.toString() === userId);
+    const user = await User.findById(userId).lean();
+     // ✅ Check if user is admin
+    const isAdmin = user?.role === "admin";
+
 
     // Allow only order owner or seller
-    if (order.user.toString() !== userId && !isSeller)
+    if (order.user.toString() !== userId && !isSeller && !isAdmin)
       return Response.json({ message: "Forbidden" }, { status: 403 });
 
     if (["cancelled", "delivered"].includes(order.orderStatus))

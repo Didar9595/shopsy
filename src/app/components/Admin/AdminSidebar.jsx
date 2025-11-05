@@ -20,7 +20,6 @@ export default function AdminSidebar({ onLinkClick }) {
     { href: "/dashboard/admin?tab=profile", label: "My Profile", icon: User },
     { href: "/dashboard/admin?tab=users", label: "Users", icon: Users },
     { href: "/dashboard/admin?tab=sellerRequest", label: "Seller Requests", icon: Store },
-    { href: "/dashboard/admin?tab=products", label: "Products", icon: Package },
     { href: "/dashboard/admin?tab=orders", label: "Orders", icon: ShoppingBag },
   ];
 

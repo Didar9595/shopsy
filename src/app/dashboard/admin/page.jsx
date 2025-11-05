@@ -11,6 +11,7 @@ import ProfilePage from "@/app/profile/page";
 import { Suspense } from "react";
 import SellerRequests from "./tabs/sellerRequest";
 import Users from "./tabs/users";
+import Orders from "./tabs/orders";
 
 
  function AdminDashboard() {
@@ -43,10 +44,9 @@ import Users from "./tabs/users";
           <div className="flex-1 flex flex-col">
             {tab==='greet' && <Greet/>}
              {tab==='profile' && <ProfilePage/>}
-             {tab==='posts' && <DashPosts/>}
              {tab==='users' && <Users/>}
              {tab==='sellerRequest' && <SellerRequests/>}
-             {tab==='dash' && <DashboardComp/>}
+             {tab==='orders' && <Orders/>}
            
           </div>
         </div>
