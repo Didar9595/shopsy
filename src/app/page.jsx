@@ -47,6 +47,12 @@ export default function Home() {
     <div className="">
       <Hero />
 
+      {user && (
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 text-gray-800 text-center py-4 mb-4">
+          <p className="text-lg font-medium">Welcome back, <span className="font-semibold">{user.name}</span> 👋</p>
+          <p className="text-sm text-gray-600">Find your next great deal below!</p>
+        </div>
+      )}
 
       <div className="flex flex-col gap-12 p-2 md:px-18 md:py-4">
         <Section title="Latest Products" products={data.latest} />
