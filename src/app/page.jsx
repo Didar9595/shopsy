@@ -48,7 +48,7 @@ export default function Home() {
       <Hero />
 
       {user && (
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 text-gray-800 text-center py-4 mb-4">
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 text-gray-800 text-center py-4 mb-4 mt-5">
           <p className="text-lg font-medium">Welcome back, <span className="font-semibold">{user.name}</span> 👋</p>
           <p className="text-sm text-gray-600">Find your next great deal below!</p>
         </div>

@@ -41,8 +41,9 @@ function CustomerDashboard() {
           <div className="flex-1 flex flex-col p-4">
             {tab === "greet" && <Greet />}
             {tab === "profile" && <ProfilePage />}
-            {tab === "orders" && <CustomerOrders />}
-            {/*
+            {tab==='pending' && <Pending/>}
+             {/* {tab === "orders" && <CustomerOrders />}
+          
             {tab === "cart" && <CustomerCart />}
             {tab === "wishlist" && <CustomerWishlist />  */}
             

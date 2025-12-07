@@ -170,7 +170,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="max-h-[fit-content] bg-gray-100 p-6">
+    <div className="max-h-[fit-content] bg-gray-100 p-2 md:p-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-6 flex flex-col md:flex-row gap-8">
 
         {/* LEFT: Product Images */}
@@ -182,7 +182,7 @@ export default function ProductDetailPage() {
               "https://via.placeholder.com/400x400?text=No+Image"
             }
             alt={product.title}
-            className="w-80 h-80 object-contain mb-4 border rounded-lg"
+            className="w-80 h-80 object-contain mb-4  rounded-lg"
           />
           <div className="flex gap-3 overflow-x-auto">
             {[...(selectedVariant?.images || product.images || [])].map((img, i) => (
@@ -347,7 +347,7 @@ export default function ProductDetailPage() {
       </div>
 
 
-      <div className="min-h-screen bg-gray-100 p-6">
+      <div className="min-h-[fit-content] bg-gray-100 ">
 
         {/* Product section (same as yours) */}
         <div className="max-w-6xl mt-10">

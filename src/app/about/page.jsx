@@ -24,10 +24,10 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-bold text-green-600">
-          About Shopsy
+          About shoppio
         </h1>
         <p className="text-gray-700 text-lg md:text-xl max-w-2xl mx-auto">
-          Shopsy is your one-stop online marketplace for electronics, fashion, home essentials, and much more. We connect quality products with happy customers across the globe.
+          shoppio is your one-stop online marketplace for electronics, fashion, home essentials, and much more. We connect quality products with happy customers across the globe.
         </p>
       </section>
 
@@ -41,7 +41,7 @@ export default function AboutPage() {
         >
           <h2 className="text-3xl font-semibold text-green-700 mb-4">Our Mission</h2>
           <p className="text-gray-700 text-justify">
-            To provide a seamless shopping experience where quality meets convenience. At Shopsy, we prioritize our customers by offering reliable products, fast delivery, and exceptional support.
+            To provide a seamless shopping experience where quality meets convenience. At shoppio, we prioritize our customers by offering reliable products, fast delivery, and exceptional support.
           </p>
         </motion.div>
         <motion.img
@@ -93,7 +93,7 @@ export default function AboutPage() {
 
       {/* Call to Action */}
       <section className="text-center">
-        <h2 className="text-3xl font-semibold text-green-700 mb-4">Join Shopsy Today!</h2>
+        <h2 className="text-3xl font-semibold text-green-700 mb-4">Join shoppio Today!</h2>
         <p className="text-gray-700 mb-6">Explore thousands of products and experience the best online shopping.</p>
         <a href="/search" className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
           Start Shopping

@@ -10,7 +10,7 @@ export default function ProductCard({ product }) {
 
    
   return (
-    <Link href={`/products/${product._id}`} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-2 flex flex-col">
+    <Link href={`/products/${product._id}`} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-2 flex flex-col ">
       <div className="relative flex justify-center items-center">
         <img
           src={product.images?.[0] || firstVariant.images?.[0] || "/placeholder.jpg"}

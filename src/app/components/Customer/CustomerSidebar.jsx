@@ -19,7 +19,7 @@ export default function CustomerSidebar({ onLinkClick }) {
   const links = [
     { href: "/dashboard/customer?tab=greet", label: "Dashboard", icon: User },
     { href: "/dashboard/customer?tab=profile", label: "My Profile", icon: User },
-    { href: "/dashboard/customer?tab=orders", label: "My Orders", icon: ShoppingBag },
+   // { href: "/dashboard/customer?tab=orders", label: "My Orders", icon: ShoppingBag },
     { href: "/dashboard/customer?tab=pending", label: "Pending Seller Request", icon: GitPullRequest },
   ];
 
