@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProductCard from "./components/ProductCard";
 import { useAuth } from "../../context/AuthProvider";
+import BannerSlider from "./components/BannerSlider";
+import Banner1 from "./components/Banner1";
+import Banner2 from "./components/Banner2";
 
 export default function Home() {
   const [data, setData] = useState({ latest: [], bestDeals: [], categoryWise: {} });
@@ -56,14 +59,23 @@ export default function Home() {
 
       <div className="flex flex-col gap-12 p-2 md:px-18 md:py-4">
         <Section title="Latest Products" products={data.latest} />
+        <Banner1/>
         <Section title="Best Deals" products={data.bestDeals} />
+        
+        <BannerSlider/>
 
         {Object.entries(data.categoryWise).map(([cat, products]) => (
           <Section key={cat} title={cat} products={products} />
         ))}
       </div>
 
+      <div className="p-1 md:px-14">
+        <Banner2/>
+      </div>
+
       <Newsletter />
     </div>
   );
 }
+
+
